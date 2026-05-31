@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>BASED NATION - THE GAME (roomtrash6)</title>
+    <meta name="description" content="Sitio oficial de roomtrash6. Sobrevive a la cabaña del bosque, consulta fechas de la gira, compra merchandising y escucha beats underground.">
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="assets/based_nation.png">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Courier+Prime:wght@400;700&family=Share+Tech+Mono&family=VT323&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="index.css">
+</head>
+<body class="horror-theme">
+    <!-- 1. PS1 WARNING / BOOT SCREEN -->
+    <div id="warning-screen" class="warning-screen">
+        <div class="warning-box">
+            <div class="warning-title">WARNING</div>
+            <p class="warning-text font-mono" style="font-size: 0.95rem; text-transform: uppercase;">
+                THIS SOFTWARE CONTIENE ULTRA UNDERGROUND RAP, SCARY GRAPHICS AND ZOMBIES UNDER THE CONTROL OF ROOMTRASH6.
+            </p>
+            <p class="warning-subtext font-mono" style="font-size: 0.8rem; text-transform: uppercase;">
+                SE RECOMIENDA DISCRECIÓN A AQUELLOS EXPUESTOS A COMMERCIAL MUSIC OR LACK OF BARS.
+            </p>
+            <div class="boot-choices" style="display: flex; gap: 15px; justify-content: center; margin-top: 10px; flex-wrap: wrap;">
+                <button id="btn-boot-underground" class="boot-btn">
+                    [ BOOT: UNDERGROUND ]
+                </button>
+                <button id="btn-boot-mainstream" class="boot-btn" style="background: #222 !important; border-color: #555 !important; color: #777 !important; box-shadow: none !important;">
+                    [ BOOT: MAINSTREAM ]
+                </button>
+            </div>
+            <!-- Warning prompt message -->
+            <div id="warning-error-msg" class="font-mono hidden" style="color: #ff1744; font-size: 0.85rem; margin-top: 5px; text-shadow: 0 0 5px rgba(255,23,68,0.5); text-transform: uppercase; font-weight: bold;"></div >
+        </div>
+    </div>
+
+    <!-- 2. MAIN HORROR INTERFACE -->
+    <div id="app-container" class="app-container hidden">
+        <!-- Interactive Background Void Canvas -->
+        <canvas id="void-canvas" class="void-canvas"></canvas>
+        
+
+        <!-- CONSOLE MAIN HEADER -->
+        <header class="console-header slime-drips">
+            <div class="header-left">
+                <span class="status-indicator-dot"></span>
+                <span class="console-label font-mono header-sys-label">BASED_NATION_v1.3</span>
+            </div>
+            <div class="header-center font-chrome" id="menu-title-display">
+                MENU
+            </div>
+            <div class="header-right font-mono" style="display: flex; align-items: center; gap: 10px;">
+                <span id="console-clock" class="header-clock">00:00:00</span>
+            </div>
+        </header>
+
+        <!-- VIEWPORT: Main Vinyl Menu -->
+        <main class="console-viewport" id="console-viewport">
+
+            <!-- Title -->
+            <div class="vinyl-menu-header">
+                <h1 class="font-based-nation vinyl-menu-title">BASED NATION</h1>
+                <p class="vinyl-menu-subtitle font-mono">// SELECCIONA UN DISCO</p>
+            </div>
+
+            <!-- Vinyl disc grid menu -->
+            <div class="vinyl-menu-grid">
+
+                <button class="vinyl-menu-item menu-opt active-opt" data-screen="game" data-index="0">
+                    <div class="vmenu-disc">
+                        <div class="vinyl-grooves"></div>
+                        <div class="vinyl-label" style="background-image: url('assets/based_nation_cover.jpg');"></div>
+                        <div class="vinyl-shine"></div>
+                        <div class="vmenu-disc-icon">☣</div>
+                    </div>
+                    <div class="vmenu-label">
+                        <span class="vmenu-title font-mono">CABAÑA</span>
+                        <span class="vmenu-sub font-mono">MINIJUEGO</span>
+                    </div>
+                </button>
+
+                <button class="vinyl-menu-item menu-opt" data-screen="shows" data-index="1">
+                    <div class="vmenu-disc">
+                        <div class="vinyl-grooves"></div>
+                        <div class="vinyl-label" style="background-image: url('assets/disobey_vol2.jpg');"></div>
+                        <div class="vinyl-shine"></div>
+                        <div class="vmenu-disc-icon">📁</div>
+                    </div>
+                    <div class="vmenu-label">
+                        <span class="vmenu-title font-mono">SHOWS</span>
+                        <span class="vmenu-sub font-mono">GIRA</span>
+                    </div>
+                </button>
+
+                <button class="vinyl-menu-item menu-opt" data-screen="bio" data-index="2">
+                    <div class="vmenu-disc">
+                        <div class="vinyl-grooves"></div>
+                        <div class="vinyl-label" style="background-image: url('assets/sueno_permanente.jpg');"></div>
+                        <div class="vinyl-shine"></div>
+                        <div class="vmenu-disc-icon">📱</div>
+                    </div>
+                    <div class="vmenu-label">
+                        <span class="vmenu-title font-mono">BIO</span>
+                        <span class="vmenu-sub font-mono">REDES</span>
+                    </div>
+                </button>
+
+            </div>
+
+            <!-- Bottom stats strip -->
+            <div class="vinyl-menu-stats font-mono">
+                <span style="display: none;"><span id="global-kills-count">0</span></span>
+                <span>💰 <span id="global-money-count" class="font-gold">0.00 €</span></span>
+            </div>
+
+            <!-- Hidden ECG for JS compatibility -->
+            <div style="display:none;">
+                <div id="ecg-pulse-line" class="ecg-line"></div>
+                <span id="ecg-status-text">FINE</span>
+            </div>
+
+        </main>
+
+        <!-- SUB-SCREENS INTERFACES -->
+
+        <!-- 2.1 ZOMBIE PLAYABLE MINIGAME CANVAS CONTAINER -->
+        <section id="screen-game" class="sub-screen hidden">
+            <div class="game-layout-container">
+                <div class="game-canvas-wrapper diamond-frame">
+                    <canvas id="game-canvas" width="640" height="400"></canvas>
+
+                    <!-- MOBILE HUD OVERLAY (shown only on mobile, floating on canvas) -->
+                    <div class="game-mobile-hud font-mono">
+                        <span class="mobile-hud-item">🔴 <span id="hud-hp-display" class="hud-value">100%</span></span>
+                        <span class="mobile-hud-item">💀 <span id="hud-kills-display" class="hud-value font-gold">0</span></span>
+                        <span class="mobile-hud-item" id="hud-ammo-clickable" title="TAP=RECARGAR">🔫 <span id="hud-ammo-display" class="hud-value">6/6</span></span>
+                        <span class="mobile-hud-item">⚡ R<span id="hud-wave-display" class="hud-value">1</span></span>
+                    </div>
+
+                    <!-- Boss Health Bar -->
+                    <div id="boss-health-container" class="boss-health-container font-mono hidden">
+                        <div class="boss-name">BOSS: <span id="boss-name-text">EL GIGANTE</span></div>
+                        <div class="boss-bar-outer">
+                            <div id="boss-health-bar" class="boss-health-bar" style="width: 100%;"></div>
+                        </div>
+                    </div>
+
+                    <!-- Mobile Weapon Selector Deck -->
+                    <div class="game-mobile-weapons font-mono">
+                        <button class="m-weapon-btn active" id="m-wpn-pistol" data-weapon="pistol">PISTOLA</button>
+                        <button class="m-weapon-btn" id="m-wpn-shotgun" data-weapon="shotgun">SHOTGUN</button>
+                        <button class="m-weapon-btn" id="m-wpn-uzi" data-weapon="uzi">UZI</button>
+                        <button class="m-weapon-btn" id="m-wpn-rpg" data-weapon="rpg">RPG</button>
+                    </div>
+
+                    <!-- Pre-start game overlay -->
+                    <div id="game-start-overlay" class="game-overlay-panel">
+                        <div class="go-content">
+                            <h2 class="font-based-nation">DEFENSA<br>DE LA CABAÑA</h2>
+                            <p class="go-instructions">Dispara a los zombis antes de que lleguen a la cabaña.</p>
+                            <p class="go-controls font-mono">📱 TAP/Mouse para apuntar y disparar | Teclas 1-4 para cambiar armas | R para recargar</p>
+                            <button id="btn-start-minigame" class="action-btn blink-border">⚔ INICIAR COMBATE</button>
+                        </div>
+                    </div>
+
+                    <!-- Game over overlay -->
+                    <div id="game-over-overlay" class="game-overlay-panel hidden">
+                        <div class="go-content">
+                            <h2 class="game-over-title">DESTRUIDO</h2>
+                            <p class="go-score font-mono">PUNTUACIÓN: <span id="game-over-points" class="font-gold">0</span> KILLS</p>
+                            <p class="go-reward font-mono" id="game-reward-msg">Los zombis devoraron tu flow.</p>
+                            <button id="btn-restart-game" class="action-btn blink-border">🔁 REINTENTAR</button>
+                        </div>
+                    </div>
+
+                    <!-- Shop overlay -->
+                    <div id="game-shop-overlay" class="game-overlay-panel hidden">
+                        <div class="go-content shop-content" style="max-width: 500px; width: 100%;">
+                            <h2 class="font-based-nation" style="color: #ff1744; text-shadow: 0 0 10px #ff1744; margin-bottom: 5px;">ARMERÍA UNDERGROUND</h2>
+                            <p class="font-mono" style="color: #64748b; font-size: 0.8rem; text-transform: uppercase;">MEJORA TU ARMAMENTO PARA EL SIGUIENTE NIVEL</p>
+                            
+                            <div class="shop-stats font-mono" style="display: flex; gap: 20px; font-weight: bold; margin: 10px 0; color: #fff; font-size: 0.9rem; justify-content: center; border-bottom: 1px dashed rgba(255,23,68,0.2); padding-bottom: 8px; width: 100%;">
+                                <span>PUNTOS: <span id="shop-user-points" class="font-gold">0</span></span>
+                                <span>DINERO: <span id="shop-user-money" style="color: #39ff14;">0.00 €</span></span>
+                            </div>
+                            
+                            <div class="shop-items-grid" style="display: flex; flex-direction: column; gap: 8px; width: 100%; max-height: 180px; overflow-y: auto; padding-right: 5px; margin-bottom: 10px;">
+                                <!-- Repair -->
+                                <div class="shop-item" style="display: flex; justify-content: space-between; align-items: center; background: rgba(255, 23, 68, 0.05); border: 1px solid rgba(255, 23, 68, 0.2); padding: 8px 12px; border-radius: 6px; gap: 10px;">
+                                    <div style="text-align: left;">
+                                        <div style="font-weight: bold; color: #fff; font-size: 0.85rem; text-transform: uppercase;">REPARAR CABAÑA (+40% HP)</div>
+                                        <div style="font-size: 0.65rem; color: #64748b; text-transform: uppercase;">Restaura integridad física de la cabaña.</div>
+                                    </div>
+                                    <button class="shop-buy-btn font-mono" data-upgrade="health" style="background: #39ff14; color: #000; font-weight: bold; border: none; padding: 6px 10px; border-radius: 4px; font-size: 0.7rem; cursor: pointer; min-width: 110px; text-align: center;">0.40 €</button>
+                                </div>
+                                <!-- Shield -->
+                                <div class="shop-item" style="display: flex; justify-content: space-between; align-items: center; background: rgba(255, 23, 68, 0.05); border: 1px solid rgba(255, 23, 68, 0.2); padding: 8px 12px; border-radius: 6px; gap: 10px;">
+                                    <div style="text-align: left;">
+                                        <div style="font-weight: bold; color: #fff; font-size: 0.85rem; text-transform: uppercase;">ESCUDO DE CABINA (+1)</div>
+                                        <div style="font-size: 0.65rem; color: #64748b; text-transform: uppercase;">Bloquea el siguiente golpe zombi (máx 3).</div>
+                                    </div>
+                                    <button class="shop-buy-btn font-mono" data-upgrade="shield" style="background: #39ff14; color: #000; font-weight: bold; border: none; padding: 6px 10px; border-radius: 4px; font-size: 0.7rem; cursor: pointer; min-width: 110px; text-align: center;">0.60 €</button>
+                                </div>
+                                <!-- Shotgun Ammo -->
+                                <div class="shop-item" style="display: flex; justify-content: space-between; align-items: center; background: rgba(255, 23, 68, 0.05); border: 1px solid rgba(255, 23, 68, 0.2); padding: 8px 12px; border-radius: 6px; gap: 10px;">
+                                    <div style="text-align: left;">
+                                        <div style="font-weight: bold; color: #fff; font-size: 0.85rem; text-transform: uppercase;">MUNICIÓN SHOTGUN (+4)</div>
+                                        <div style="font-size: 0.65rem; color: #64748b; text-transform: uppercase;">Añade cartuchos pesados a la reserva.</div>
+                                    </div>
+                                    <button class="shop-buy-btn font-mono" data-upgrade="ammo_shotgun" style="background: #39ff14; color: #000; font-weight: bold; border: none; padding: 6px 10px; border-radius: 4px; font-size: 0.7rem; cursor: pointer; min-width: 110px; text-align: center;">0.30 €</button>
+                                </div>
+                                <!-- Uzi Ammo -->
+                                <div class="shop-item" style="display: flex; justify-content: space-between; align-items: center; background: rgba(255, 23, 68, 0.05); border: 1px solid rgba(255, 23, 68, 0.2); padding: 8px 12px; border-radius: 6px; gap: 10px;">
+                                    <div style="text-align: left;">
+                                        <div style="font-weight: bold; color: #fff; font-size: 0.85rem; text-transform: uppercase;">MUNICIÓN UZI (+40)</div>
+                                        <div style="font-size: 0.65rem; color: #64748b; text-transform: uppercase;">Añade cargadores rápidos de Uzi.</div>
+                                    </div>
+                                    <button class="shop-buy-btn font-mono" data-upgrade="ammo_uzi" style="background: #39ff14; color: #000; font-weight: bold; border: none; padding: 6px 10px; border-radius: 4px; font-size: 0.7rem; cursor: pointer; min-width: 110px; text-align: center;">0.35 €</button>
+                                </div>
+                                <!-- RPG Ammo -->
+                                <div class="shop-item" style="display: flex; justify-content: space-between; align-items: center; background: rgba(255, 23, 68, 0.05); border: 1px solid rgba(255, 23, 68, 0.2); padding: 8px 12px; border-radius: 6px; gap: 10px;">
+                                    <div style="text-align: left;">
+                                        <div style="font-weight: bold; color: #fff; font-size: 0.85rem; text-transform: uppercase;">MUNICIÓN RPG (+1)</div>
+                                        <div style="font-size: 0.65rem; color: #64748b; text-transform: uppercase;">Añade cohetes a la reserva destructiva.</div>
+                                    </div>
+                                    <button class="shop-buy-btn font-mono" data-upgrade="ammo_rpg" style="background: #39ff14; color: #000; font-weight: bold; border: none; padding: 6px 10px; border-radius: 4px; font-size: 0.7rem; cursor: pointer; min-width: 110px; text-align: center;">0.80 €</button>
+                                </div>
+                                <!-- Damage Up -->
+                                <div class="shop-item" style="display: flex; justify-content: space-between; align-items: center; background: rgba(255, 23, 68, 0.05); border: 1px solid rgba(255, 23, 68, 0.2); padding: 8px 12px; border-radius: 6px; gap: 10px;">
+                                    <div style="text-align: left;">
+                                        <div style="font-weight: bold; color: #fff; font-size: 0.85rem; text-transform: uppercase;">DAÑO ARMAS (+25%)</div>
+                                        <div style="font-size: 0.65rem; color: #64748b; text-transform: uppercase;">Aumento de potencia para todo tu arsenal.</div>
+                                    </div>
+                                    <button class="shop-buy-btn font-mono" data-upgrade="damage_up" style="background: #39ff14; color: #000; font-weight: bold; border: none; padding: 6px 10px; border-radius: 4px; font-size: 0.7rem; cursor: pointer; min-width: 110px; text-align: center;">1.20 €</button>
+                                </div>
+                            </div>
+                            
+                            <button id="btn-next-level" class="action-btn blink-border" style="padding: 10px 20px; font-size: 0.85rem; width: 100%;">➔ INICIAR SIGUIENTE NIVEL</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- MOBILE TOUCH CONTROLS (floating below canvas wrapper) -->
+                <div class="game-touch-controls">
+                    <button id="btn-reload-mobile" class="touch-btn touch-reload-btn font-mono">🔄 RECARGAR</button>
+                    <button class="touch-btn sub-screen-back-btn font-mono" style="background: rgba(255, 23, 68, 0.15) !important; color: #fff !important; border: 1px solid var(--horror-red) !important; box-shadow: 0 0 10px rgba(255, 23, 68, 0.3) !important;">← MENÚ</button>
+                </div>
+
+                <!-- Desktop-only sidebar HUD -->
+                <div class="game-instructions-sidebar diamond-frame slime-drips">
+                    <h3>MISIÓN DE DEFENSA</h3>
+                    <div class="mission-hud font-mono">
+                        <div class="hud-item" id="hud-ammo-clickable-desktop" style="cursor: pointer;" title="PULSA PARA RECARGAR">CARGADOR: <span class="hud-value" id="hud-ammo-display-desktop">6 / 6</span></div>
+                        <div class="hud-item">SALUD: <span class="hud-value" id="hud-hp-display-desktop" style="color: #39ff14;">100%</span></div>
+                        <div class="hud-item">KILLS: <span class="hud-value font-gold" id="hud-kills-display-desktop">0</span></div>
+                        <div class="hud-item">RONDA: <span class="hud-value" id="hud-wave-display-desktop">1</span></div>
+                        
+                        <!-- Desktop Weapon Selector Deck -->
+                        <div class="desktop-weapon-selector" style="margin-top: 15px; width: 100%;">
+                            <div style="font-size: 0.75rem; color: #ff1744; margin-bottom: 6px; text-transform: uppercase; border-bottom: 1px solid rgba(255,23,68,0.2); padding-bottom: 2px;">ARMARIO DE ARMAS:</div>
+                            <div class="d-weapon-grid" style="display: flex; flex-direction: column; gap: 6px;">
+                                <button class="d-weapon-btn active" id="d-wpn-pistol" data-weapon="pistol">
+                                    <span class="wpn-key">[1]</span> 9MM PISTOLA <span class="wpn-ammo">∞</span>
+                                </button>
+                                <button class="d-weapon-btn" id="d-wpn-shotgun" data-weapon="shotgun">
+                                    <span class="wpn-key">[2]</span> SHOTGUN <span class="wpn-ammo" id="d-wpn-ammo-shotgun">0 / 8</span>
+                                </button>
+                                <button class="d-weapon-btn" id="d-wpn-uzi" data-weapon="uzi">
+                                    <span class="wpn-key">[3]</span> UZI SMG <span class="wpn-ammo" id="d-wpn-ammo-uzi">0 / 90</span>
+                                </button>
+                                <button class="d-weapon-btn" id="d-wpn-rpg" data-weapon="rpg">
+                                    <span class="wpn-key">[4]</span> RPG COHETE <span class="wpn-ammo" id="d-wpn-ammo-rpg">0 / 2</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <button id="btn-reload-desktop" class="action-btn" style="background-color: var(--horror-red); color: #000; box-shadow: var(--horror-red-glow); font-size: 0.85rem; padding: 6px; margin-top: 15px; width: 100%; font-weight: bold;">[ RECARGAR ARMA ]</button>
+                    </div>
+                    <div class="mission-lore font-mono" style="margin-top: 15px;">
+                        <p class="lore-title">// SUPERVIVENCIA:</p>
+                        <p class="lore-text">Elimina las oleadas de zombis. Destruye los jefes de nivel para obtener mejor armamento.</p>
+                        <p class="lore-tip">* Teclas [ 1-4 ] para armas, [ R ] para recargar.</p>
+                    </div>
+                    <button id="btn-exit-game" class="action-btn secondary-btn" style="margin-top: auto;">SALIR AL MENÚ</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- 2.2 TOURS / CLASSIFIED FILE SUB-SCREEN -->
+        <section id="screen-shows" class="sub-screen grunge-panel hidden">
+            <div class="sub-screen-header">
+                <div style="display: flex; align-items: center; gap: 15px;">
+                    <button class="sub-screen-back-btn action-btn secondary-btn font-mono" style="padding: 5px 12px; font-size: 0.8rem; margin: 0; width: auto; font-weight: bold;">← MENÚ</button>
+                    <h2>EXPEDIENTE DE SHOWS (GIRA)</h2>
+                </div>
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <div class="file-tag font-mono">CÓDIGO: CONFIDENCIAL_RT6</div>
+                </div>
+            </div>
+            <div class="sub-screen-body layout-shows">
+                <div class="shows-list-panel retro-scroll">
+                    <!-- classified save slot files -->
+                    <div class="save-slot-row active-slot" data-show-id="0">
+                        <div class="save-slot-icon">📁</div>
+                        <div class="save-slot-info">
+                            <div class="save-title">SHOW: MADRID @ CAFÉ BERLÍN</div>
+                            <div class="save-meta">28 JUN 2026 | ENTRADA DISPONIBLE | 136 KB</div>
+                        </div>
+                    </div>
+                    <div class="save-slot-row" data-show-id="1">
+                        <div class="save-slot-icon">📁</div>
+                        <div class="save-slot-info">
+                            <div class="save-title">CONCIERTO REALIZADO: BARCELONA @ RAZZMATAZZ 3</div>
+                            <div class="save-meta">10 APR 2026 | CONCLUIDO | 120 KB</div>
+                        </div>
+                    </div>
+                    <div class="save-slot-row" data-show-id="2">
+                        <div class="save-slot-icon">📁</div>
+                        <div class="save-slot-info">
+                            <div class="save-title">CONCIERTO REALIZADO: MADRID @ SALA UNI</div>
+                            <div class="save-meta">17 APR 2026 | CONCLUIDO | 120 KB</div>
+                        </div>
+                    </div>
+                    <div class="save-slot-row" data-show-id="3">
+                        <div class="save-slot-icon">📁</div>
+                        <div class="save-slot-info">
+                            <div class="save-title">CONCIERTO REALIZADO: VALENCIA @ SPOOK CLUB</div>
+                            <div class="save-meta">20 MAR 2026 | CONCLUIDO | 115 KB</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="show-details-panel diamond-frame slime-drips">
+                    <div class="details-card">
+                        <div class="details-icon-3d">
+                            <div class="cube">
+                                <div class="face front">☣</div>
+                                <div class="face back">☣</div>
+                                <div class="face left">☣</div>
+                                <div class="face right">☣</div>
+                                <div class="face top">☣</div>
+                                <div class="face bottom">☣</div>
+                            </div>
+                        </div>
+                        <h3 id="detail-show-title">MADRID @ CAFÉ BERLÍN</h3>
+                        <p class="details-desc" id="detail-show-venue">Café Berlín, Madrid (España)</p>
+                        <table class="details-table">
+                            <tr><td>OPERACIÓN:</td><td>CONCIERTO EN VIVO / BASED NATION</td></tr>
+                            <tr><td>FECHA GIRA:</td><td id="detail-show-date">28 de Junio de 2026</td></tr>
+                            <tr><td>ESTADO:</td><td id="detail-show-status" style="color: #39ff14;">EN CURSO / ENTRADAS</td></tr>
+                        </table>
+                        <div class="details-actions">
+                            <a href="#" target="_blank" id="btn-buy-tickets" class="action-btn blink-border">
+                                <span class="btn-icon">⚡</span> EJECUTAR MISIÓN (ENTRADAS)
+                            </a>
+                            <button id="btn-delete-show" class="action-btn secondary-btn">
+                                <span class="btn-icon">🗑️</span> ELIMINAR EXPEDIENTE
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Back button at the bottom of sub-screen -->
+            <button class="action-btn sub-screen-back-btn font-mono" style="margin-top: 15px; width: 100%; font-size: 0.85rem; max-width: 300px; align-self: center;">
+                ← VOLVER AL MENÚ
+            </button>
+        </section>
+
+        <!-- 2.3 SAVE ROOM / MUSIC PLAYER SUB-SCREEN -->
+        <section id="screen-beats" class="sub-screen grunge-panel hidden">
+            <div class="sub-screen-header">
+                <div style="display: flex; align-items: center; gap: 15px;">
+                    <button class="sub-screen-back-btn action-btn secondary-btn font-mono" style="padding: 5px 12px; font-size: 0.8rem; margin: 0; width: auto; font-weight: bold;">← MENÚ</button>
+                    <h2>REPRODUCTOR DE MÚSICA (SPOTIFY)</h2>
+                </div>
+            </div>
+            
+            <div class="sub-screen-body" style="display: flex; justify-content: center; width: 100%;">
+                <div class="beats-list-panel diamond-frame slime-drips" style="width: 100%; max-width: 680px; padding: 20px; background: rgba(0,0,0,0.5);">
+                    <h3 style="font-family: var(--font-mono); font-size: 1.1rem; color: var(--horror-red); text-shadow: var(--horror-red-glow); margin-bottom: 15px; text-transform: uppercase;">TRACKLIST: BASED NATION</h3>
+                    
+                    <div style="display: flex; flex-direction: column; gap: 10px;">
+                        <a href="https://open.spotify.com/track/4jVnK5M0mC3n0Rz5E7gQ5R" target="_blank" class="track-row" style="text-decoration: none; color: inherit; padding: 15px; display: flex; align-items: center; justify-content: space-between; border: 1px solid rgba(255, 23, 68, 0.25); background: rgba(10, 2, 4, 0.6); border-radius: 8px; transition: all 0.2s ease;">
+                            <div style="display: flex; align-items: center; gap: 15px;">
+                                <div class="track-num" style="font-size: 1.2rem; color: var(--horror-red); font-weight: bold;">01</div>
+                                <div style="display: flex; flex-direction: column; gap: 2px;">
+                                    <span style="font-family: var(--font-mono); font-weight: bold; color: #fff; font-size: 1rem;">PROBLEM? (ft. JOHNNYFUU)</span>
+                                    <span style="font-size: 0.75rem; color: #64748b; font-family: var(--font-horror);">Based Nation EP (BPM: 140)</span>
+                                </div>
+                            </div>
+                            <div class="action-btn font-mono" style="width: auto; padding: 6px 12px; font-size: 0.75rem; background: #1DB954; color: #fff; border: none; box-shadow: 0 0 10px rgba(29, 185, 84, 0.4); margin: 0; border-radius: 4px;">SPOTIFY ↗</div>
+                        </a>
+
+                        <a href="https://open.spotify.com/track/2f6v8m9K1X7n3wV5A0lI9P" target="_blank" class="track-row" style="text-decoration: none; color: inherit; padding: 15px; display: flex; align-items: center; justify-content: space-between; border: 1px solid rgba(255, 23, 68, 0.25); background: rgba(10, 2, 4, 0.6); border-radius: 8px; transition: all 0.2s ease;">
+                            <div style="display: flex; align-items: center; gap: 15px;">
+                                <div class="track-num" style="font-size: 1.2rem; color: var(--horror-red); font-weight: bold;">02</div>
+                                <div style="display: flex; flex-direction: column; gap: 2px;">
+                                    <span style="font-family: var(--font-mono); font-weight: bold; color: #fff; font-size: 1rem;">BASED ANTHEM (ft. JOHNNYFUU & Aft3rlife)</span>
+                                    <span style="font-size: 0.75rem; color: #64748b; font-family: var(--font-horror);">Based Nation EP (BPM: 138)</span>
+                                </div>
+                            </div>
+                            <div class="action-btn font-mono" style="width: auto; padding: 6px 12px; font-size: 0.75rem; background: #1DB954; color: #fff; border: none; box-shadow: 0 0 10px rgba(29, 185, 84, 0.4); margin: 0; border-radius: 4px;">SPOTIFY ↗</div>
+                        </a>
+
+                        <a href="https://open.spotify.com/track/0k1m9n4V8w6X5Z7R2E3T1Q" target="_blank" class="track-row" style="text-decoration: none; color: inherit; padding: 15px; display: flex; align-items: center; justify-content: space-between; border: 1px solid rgba(255, 23, 68, 0.25); background: rgba(10, 2, 4, 0.6); border-radius: 8px; transition: all 0.2s ease;">
+                            <div style="display: flex; align-items: center; gap: 15px;">
+                                <div class="track-num" style="font-size: 1.2rem; color: var(--horror-red); font-weight: bold;">03</div>
+                                <div style="display: flex; flex-direction: column; gap: 2px;">
+                                    <span style="font-family: var(--font-mono); font-weight: bold; color: #fff; font-size: 1rem;">FREESTYLE 2000 (ft. Aft3rlife)</span>
+                                    <span style="font-size: 0.75rem; color: #64748b; font-family: var(--font-horror);">Based Nation EP (BPM: 145)</span>
+                                </div>
+                            </div>
+                            <div class="action-btn font-mono" style="width: auto; padding: 6px 12px; font-size: 0.75rem; background: #1DB954; color: #fff; border: none; box-shadow: 0 0 10px rgba(29, 185, 84, 0.4); margin: 0; border-radius: 4px;">SPOTIFY ↗</div>
+                        </a>
+
+                        <a href="https://open.spotify.com/track/6p5w8v9N2x1L4Y3M7Q0A6T" target="_blank" class="track-row" style="text-decoration: none; color: inherit; padding: 15px; display: flex; align-items: center; justify-content: space-between; border: 1px solid rgba(255, 23, 68, 0.25); background: rgba(10, 2, 4, 0.6); border-radius: 8px; transition: all 0.2s ease;">
+                            <div style="display: flex; align-items: center; gap: 15px;">
+                                <div class="track-num" style="font-size: 1.2rem; color: var(--horror-red); font-weight: bold;">04</div>
+                                <div style="display: flex; flex-direction: column; gap: 2px;">
+                                    <span style="font-family: var(--font-mono); font-weight: bold; color: #fff; font-size: 1rem;">MADONNA (ft. Biberon)</span>
+                                    <span style="font-size: 0.75rem; color: #64748b; font-family: var(--font-horror);">Based Nation EP (BPM: 130)</span>
+                                </div>
+                            </div>
+                            <div class="action-btn font-mono" style="width: auto; padding: 6px 12px; font-size: 0.75rem; background: #1DB954; color: #fff; border: none; box-shadow: 0 0 10px rgba(29, 185, 84, 0.4); margin: 0; border-radius: 4px;">SPOTIFY ↗</div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <!-- Back button at the bottom of sub-screen -->
+            <button class="action-btn sub-screen-back-btn font-mono" style="margin-top: 15px; width: 100%; font-size: 0.85rem; max-width: 300px; align-self: center;">
+                ← VOLVER AL MENÚ
+            </button>
+        </section>
+
+        <!-- Hidden Container to hold DOM nodes required to prevent JS crashes -->
+        <div style="display: none;">
+            <span id="shop-points-display">0</span>
+        </div>
+
+        <!-- 2.5 STATUS / BIO SUB-SCREEN (INVENTORY STYLE) -->
+        <section id="screen-bio" class="sub-screen grunge-panel hidden">
+            <div class="sub-screen-header">
+                <div style="display: flex; align-items: center; gap: 15px;">
+                    <button class="sub-screen-back-btn action-btn secondary-btn font-mono" style="padding: 5px 12px; font-size: 0.8rem; margin: 0; width: auto; font-weight: bold;">← MENÚ</button>
+                    <h2>ESTADO DEL AGENTE (INVENTARIO Y REDES)</h2>
+                </div>
+            </div>
+            <div class="sub-screen-body layout-bio">
+                <div class="bio-left-panel diamond-frame slime-drips" style="padding: 15px;">
+                    <!-- Top Info Section: Mugshot & Stats side-by-side -->
+                    <div style="display: flex; gap: 15px; flex-wrap: wrap; align-items: center; justify-content: center;">
+                        <!-- Agent Mugshot Card -->
+                        <div class="bio-mugshot-wrapper" style="margin: 0; flex: 0 0 120px; max-width: 120px;">
+                            <img src="assets/first_rapper.jpg" alt="Mugshot roomtrash6 - Primer Rapero de España">
+                        </div>
+                        
+                        <!-- Stats List -->
+                        <div class="stat-section" style="flex: 1 1 200px; min-width: 200px;">
+                            <h3 style="margin-bottom: 8px;">ESTADÍSTICAS DEL AGENTE</h3>
+                            <div class="stat-row" style="margin-bottom: 4px;">
+                                <span class="stat-label" style="width: 80px;">HARDWARE:</span>
+                                <span class="stat-value font-mono">roomtrash6</span>
+                            </div>
+                            <div class="stat-row" style="margin-bottom: 4px;">
+                                <span class="stat-label" style="width: 80px;">LEVEL:</span>
+                                <span class="stat-value font-mono">99</span>
+                            </div>
+                            <div class="stat-row" style="margin-bottom: 4px;">
+                                <span class="stat-label" style="width: 80px;">FLOW:</span>
+                                <div class="stat-bar-container" style="margin: 0 8px;"><div class="stat-bar" style="width: 98%;"></div></div>
+                                <span class="stat-value font-mono">98/99</span>
+                            </div>
+                            <div class="stat-row" style="margin-bottom: 4px;">
+                                <span class="stat-label" style="width: 80px;">UNDER:</span>
+                                <div class="stat-bar-container" style="margin: 0 8px;"><div class="stat-bar" style="width: 95%;"></div></div>
+                                <span class="stat-value font-mono">95/99</span>
+                            </div>
+                            <div class="stat-row" style="margin-bottom: 4px;">
+                                <span class="stat-label" style="width: 80px;">PIES:</span>
+                                <div class="stat-bar-container" style="margin: 0 8px;"><div class="stat-bar" style="width: 100%;"></div></div>
+                                <span class="stat-value font-mono">99/99</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Social Links: 3-column grid directly visible under info -->
+                    <div class="inventory-section" style="margin-top: 15px;">
+                        <h3 style="font-family: var(--font-mono); font-size: 0.9rem; color: var(--horror-red); text-shadow: var(--horror-red-glow); margin-bottom: 8px; text-transform: uppercase;">INVENTARIO DE REDES</h3>
+                        <div class="inventory-grid" style="grid-template-columns: repeat(3, 1fr); gap: 8px;">
+                            <a href="https://www.instagram.com/roomtrash6/" target="_blank" class="inv-slot" title="Equipar Instagram" style="padding: 8px; gap: 4px;">
+                                <div class="inv-slot-icon" style="font-size: 1.3rem;">📱</div>
+                                <div class="inv-slot-name font-mono" style="font-size: 0.65rem;">INSTAGRAM</div>
+                                <div class="inv-slot-status" style="font-size: 0.6rem;">EQUIPADO</div>
+                            </a>
+                            <a href="https://open.spotify.com/intl-es/artist/1VdDHkm5XpSy9OZiNTCzjE" target="_blank" class="inv-slot" title="Equipar Spotify" style="padding: 8px; gap: 4px;">
+                                <div class="inv-slot-icon" style="font-size: 1.3rem;">💿</div>
+                                <div class="inv-slot-name font-mono" style="font-size: 0.65rem;">SPOTIFY</div>
+                                <div class="inv-slot-status" style="font-size: 0.6rem;">EQUIPADO</div>
+                            </a>
+                            <a href="https://www.youtube.com/@roomtrash6" target="_blank" class="inv-slot" title="Equipar YouTube" style="padding: 8px; gap: 4px;">
+                                <div class="inv-slot-icon" style="font-size: 1.3rem;">📼</div>
+                                <div class="inv-slot-name font-mono" style="font-size: 0.65rem;">YOUTUBE</div>
+                                <div class="inv-slot-status" style="font-size: 0.6rem;">EQUIPADO</div>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Short spec description -->
+                    <div class="system-spec-section font-mono" style="margin-top: 15px; padding: 10px;">
+                        <h3 style="font-size: 0.85rem; margin-bottom: 6px;">DESCRIPCIÓN DEL ARCHIVO</h3>
+                        <p style="font-size: 0.75rem; line-height: 1.4;">ROOMTRASH6 es un ente viral dentro de la escena del rap español underground y miembro del colectivo DISOBEY. En septiembre de 2025 liberó el virus 'BASED NATION', el cual se propaga rápidamente por las redes neuronales a través de samples oxidados y frecuencias 808 distorsionadas.</p>
+                    </div>
+                </div>
+            </div>
+            <!-- Back button at the bottom of sub-screen -->
+            <button class="action-btn sub-screen-back-btn font-mono" style="margin-top: 15px; width: 100%; font-size: 0.85rem; max-width: 300px; align-self: center;">
+                ← VOLVER AL MENÚ
+            </button>
+        </section>
+
+        <!-- HORROR FOOTER PANEL -->
+        <footer class="console-footer">
+            <div class="footer-help">
+                <span class="footer-btn" id="guide-ok">✕</span> <span class="footer-btn-label">OK</span>
+                <span class="footer-btn" id="guide-back">◯</span> <span class="footer-btn-label">Atrás</span>
+            </div>
+            
+            <div class="footer-credits font-mono footer-credits-desktop">
+                <span>© 2001-2026 BASED NATION INC.</span>
+            </div>
+        </footer>
+        
+        <!-- Floating Y2K Parental Advisory badge (Street Mixtape style) -->
+        <div class="advisory-badge-floating">
+            <div class="adv-text-top">PARENTAL</div>
+            <div class="adv-text-mid">ADVISORY</div>
+            <div class="adv-text-bot">EXPLICIT CONTENT</div>
+        </div>
+    </div>
+
+    <!-- AUDIO PLAYER NODES -->
+    <div class="audio-system-node" id="sound-engine"></div>
+
+    <script src="index.js"></script>
+</body>
+</html>
