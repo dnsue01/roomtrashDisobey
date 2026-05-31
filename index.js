@@ -15,7 +15,7 @@ const SHOWS_DATA = [
         venue: "Café Berlín, Madrid (España)",
         date: "28 de Junio de 2026",
         meta: "28 JUN 2026 | ENTRADA DISPONIBLE | 136 KB",
-        ticketUrl: "https://www.ticketrona.com/evento/christ-dillinger-acid-souljah-roomtrash-cybernene-en-madrid-en-cafe-berlin",
+        ticketUrl: "https://www.ticketrona.com/evento/christ-dillinger-acid-soulja-roomtrash6-cybernene-en-madrid",
         status: "EN CURSO / ENTRADAS",
         size: "136 KB",
         type: "Show File (Gig Info)",
