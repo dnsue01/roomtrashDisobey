@@ -130,7 +130,7 @@ const BEATS_DATA = [
         length: "1:30",
         tempo: 140,
         description: "Colaboración insígnia del álbum Based Nation con Bring Me The Horizon sample.",
-        spotifyUrl: "https://open.spotify.com/track/4jVnK5M0mC3n0Rz5E7gQ5R"
+        spotifyUrl: "https://open.spotify.com/track/7MeuRThWTJv9SEevVVYQ0d"
     },
     {
         id: 1,
@@ -139,7 +139,7 @@ const BEATS_DATA = [
         length: "1:20",
         tempo: 138,
         description: "Himno underground con colaboraciones del colectivo Disobey.",
-        spotifyUrl: "https://open.spotify.com/track/2f6v8m9K1X7n3wV5A0lI9P"
+        spotifyUrl: "https://open.spotify.com/track/2XwEEPXUAZ4zy9DgsxTzj9"
     },
     {
         id: 2,
@@ -148,7 +148,7 @@ const BEATS_DATA = [
         length: "1:15",
         tempo: 145,
         description: "Estilo retro Y2K con líricas rápidas y deconstructivas.",
-        spotifyUrl: "https://open.spotify.com/track/0k1m9n4V8w6X5Z7R2E3T1Q"
+        spotifyUrl: "https://open.spotify.com/track/7m10oRHfy8k6YdUR4vkc3g"
     },
     {
         id: 3,
@@ -157,7 +157,7 @@ const BEATS_DATA = [
         length: "1:10",
         tempo: 130,
         description: "Colaboración electrónica e industrial del álbum Based Nation.",
-        spotifyUrl: "https://open.spotify.com/track/6p5w8v9N2x1L4Y3M7Q0A6T"
+        spotifyUrl: "https://open.spotify.com/track/2TxlUAEWBbWPrsSZIs01ki"
     }
 ];
 
@@ -972,6 +972,7 @@ document.addEventListener('DOMContentLoaded', () => {
     setupShopSystem();
     loadGameProgress();
     setupSpotifyIntegration();
+    setupDiscsRotation();
 });
 
 // Sub-screen back click hooks
@@ -1208,10 +1209,9 @@ function selectMenuOption() {
             if (container && iframe) {
                 container.appendChild(iframe);
             }
+            setupBeatsPlayer();
         } else if (AppState.currentScreen === 'merch') {
             updateMerchDetails(AppState.merchIndex);
-        } else if (AppState.currentScreen === 'beats') {
-            setupBeatsPlayer();
         }
     }, 400);
 }
@@ -3687,4 +3687,57 @@ function playRandomSpotifyTrack() {
             console.log("Autoplaying random Spotify track: " + track.name);
         }
     }
+}
+
+// ==========================================================================
+// 9. DYNAMIC SPINS COVERS ROTATOR
+// ==========================================================================
+
+function setupDiscsRotation() {
+    const covers = [
+        'assets/based_nation_cover.jpg',
+        'assets/cash_out.jpg',
+        'assets/crazy_london.jpg',
+        'assets/de_rodillas.jpg',
+        'assets/disobey_vol2.jpg',
+        'assets/el_simon_cover.jpg',
+        'assets/es_lo_ke_hay.jpg',
+        'assets/first_rapper.jpg',
+        'assets/mac_and_cheese.jpg',
+        'assets/mejor_no.jpg',
+        'assets/sueno_permanente.jpg',
+        'assets/trip.jpg',
+        'assets/work_it_up.jpg',
+        'assets/yolonoto.jpg'
+    ];
+    
+    const vinylLabels = document.querySelectorAll('.vinyl-menu-item .vinyl-label');
+    if (vinylLabels.length === 0) return;
+    
+    // Assign a unique random starting index to each label
+    const usedIndices = new Set();
+    vinylLabels.forEach((label) => {
+        let randIdx;
+        do {
+            randIdx = Math.floor(Math.random() * covers.length);
+        } while (usedIndices.has(randIdx) && usedIndices.size < covers.length);
+        
+        usedIndices.add(randIdx);
+        label.style.backgroundImage = "url('" + covers[randIdx] + "')";
+        label.style.transition = 'opacity 0.4s ease';
+    });
+    
+    // Periodically change them with a smooth fade
+    setInterval(() => {
+        if (AppState.currentScreen !== 'menu') return; // Only rotate when in menu screen to conserve performance
+        
+        vinylLabels.forEach((label) => {
+            label.style.opacity = '0.1';
+            setTimeout(() => {
+                const randIdx = Math.floor(Math.random() * covers.length);
+                label.style.backgroundImage = "url('" + covers[randIdx] + "')";
+                label.style.opacity = '1';
+            }, 400);
+        });
+    }, 7000); // Every 7 seconds
 }
