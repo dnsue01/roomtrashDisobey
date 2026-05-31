@@ -524,17 +524,23 @@ a, button, .menu-opt, .save-slot-row, .merch-item, .track-row, .inv-slot {
     text-transform: uppercase;
 }
 
-/* Grid of vinyl discs — 3 cols on mobile, 5 on desktop */
+/* Grid of vinyl discs — Horizontal on Desktop (4 cols), 2x2 on Mobile (2 cols) */
 .vinyl-menu-grid {
-    display: flex;
-    flex-wrap: wrap;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
     justify-content: center;
     gap: clamp(1rem, 3vw, 2rem) clamp(0.75rem, 2vw, 1.5rem);
     width: 100%;
-    max-width: 1000px;
-    flex: 1 1 auto;
-    min-height: 0;
-    align-content: center;
+    max-width: 960px;
+    margin: 0 auto;
+}
+
+@media (max-width: 900px) {
+    .vinyl-menu-grid {
+        grid-template-columns: repeat(2, 1fr);
+        max-width: 460px;
+        gap: 15px;
+    }
 }
 
 /* Individual vinyl menu button styled as a premium Y2K console cartridge card */
@@ -551,7 +557,9 @@ a, button, .menu-opt, .save-slot-row, .merch-item, .track-row, .inv-slot {
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
     -webkit-tap-highlight-color: transparent;
     outline: none;
-    flex: 0 0 200px;
+    width: 100%;
+    max-width: 220px;
+    margin: 0 auto;
     position: relative;
     overflow: hidden;
 }
