@@ -1217,6 +1217,8 @@ function selectMenuOption() {
         }
         
         positionSpotifyIframe();
+        // Re-position after entry zoom animation completes (400ms transition time)
+        setTimeout(positionSpotifyIframe, 450);
     }, 400);
 }
 
@@ -1263,6 +1265,8 @@ function closeActiveSubScreen() {
         document.getElementById('global-money-count').textContent = AppState.moneyValue.toFixed(2) + ' €';
         
         positionSpotifyIframe();
+        // Re-position after entry zoom animation completes (400ms transition time)
+        setTimeout(positionSpotifyIframe, 450);
     }, 400);
 }
 
