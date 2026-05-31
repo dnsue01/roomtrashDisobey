@@ -1005,6 +1005,7 @@ function setupStartupSequence() {
                 resizeVoidCanvas();
                 AppState.currentScreen = 'menu';
                 updateECG(100); // 100% fine health
+                playRandomSpotifyTrack();
             }, 1200);
         });
     }
@@ -3671,4 +3672,19 @@ function runTicketronaScraper() {
         await writeLog("&gt; -------------------------------------------------------------", 200);
         await writeLog("&gt; <span style='color:#39ff14; font-weight:bold;'>[RESULTADOS BÚSQUEDA]</span> 1 show activo disponible para roomtrash6 en Madrid (España).", 200);
     })();
+}
+
+function playRandomSpotifyTrack() {
+    const iframe = document.getElementById('spotify-widget-iframe');
+    if (iframe && typeof BEATS_DATA !== 'undefined' && BEATS_DATA.length > 0) {
+        const randomIdx = Math.floor(Math.random() * BEATS_DATA.length);
+        const track = BEATS_DATA[randomIdx];
+        const parts = track.spotifyUrl.split('/track/');
+        if (parts.length > 1) {
+            const trackId = parts[1].split('?')[0];
+            iframe.src = "https://open.spotify.com/embed/track/" + trackId + "?utm_source=generator&theme=0&autoplay=1";
+            AppState.beatsIndex = randomIdx;
+            console.log("Autoplaying random Spotify track: " + track.name);
+        }
+    }
 }
