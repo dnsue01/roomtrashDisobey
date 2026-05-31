@@ -1204,11 +1204,7 @@ function selectMenuOption() {
             updateShowDetails(AppState.showsIndex);
             runTicketronaScraper();
         } else if (AppState.currentScreen === 'beats') {
-            const container = document.getElementById('spotify-iframe-container');
-            const iframe = document.getElementById('spotify-widget-iframe');
-            if (container && iframe) {
-                container.appendChild(iframe);
-            }
+            positionSpotifyIframe();
             setupBeatsPlayer();
         } else if (AppState.currentScreen === 'merch') {
             updateMerchDetails(AppState.merchIndex);
@@ -1224,11 +1220,7 @@ function closeActiveSubScreen() {
     
     // Stop beat engine if exiting music screen
     if (AppState.currentScreen === 'beats') {
-        const host = document.getElementById('spotify-audio-host');
-        const iframe = document.getElementById('spotify-widget-iframe');
-        if (host && iframe) {
-            host.appendChild(iframe);
-        }
+        positionSpotifyIframe();
     }
     if (AppState.currentScreen === 'beats' && AppState.audioPlaying) {
         togglePlayPause();
@@ -1514,6 +1506,16 @@ function loadTrack(idx) {
     const spotLink = document.getElementById('player-spotify-link');
     if (spotLink && track.spotifyUrl) {
         spotLink.href = track.spotifyUrl;
+    }
+
+    const iframe = document.getElementById('spotify-widget-iframe');
+    if (iframe && track.spotifyUrl) {
+        const parts = track.spotifyUrl.split('/track/');
+        if (parts.length > 1) {
+            const trackId = parts[1].split('?')[0];
+            const autoplayFlag = AppState.audioPlaying ? '&autoplay=1' : '';
+            iframe.src = `https://open.spotify.com/embed/track/${trackId}?utm_source=generator&theme=0${autoplayFlag}`;
+        }
     }
 }
 
@@ -3587,30 +3589,62 @@ setupGamepadPolling();
 // 7. SPOTIFY INTEGRATION SYSTEM
 // ==========================================================================
 
+function positionSpotifyIframe() {
+    const host = document.getElementById('spotify-audio-host');
+    const placeholder = document.getElementById('spotify-iframe-container');
+    
+    if (host && placeholder && AppState.currentScreen === 'beats') {
+        const rect = placeholder.getBoundingClientRect();
+        host.style.transition = 'opacity 0.3s ease';
+        host.style.left = `${rect.left}px`;
+        host.style.top = `${rect.top}px`;
+        host.style.width = `${rect.width}px`;
+        host.style.height = `${rect.height}px`;
+        host.style.opacity = '1';
+        host.style.pointerEvents = 'auto';
+    } else if (host) {
+        host.style.transition = 'opacity 0.3s ease, left 0s 0.3s, top 0s 0.3s';
+        host.style.left = '-9999px';
+        host.style.top = '-9999px';
+        host.style.width = '300px';
+        host.style.height = '380px';
+        host.style.opacity = '0.001';
+        host.style.pointerEvents = 'none';
+    }
+}
+
 function setupSpotifyIntegration() {
     // Bind click events on all track rows inside beats screen to load the track inside this iframe
     const trackRows = document.querySelectorAll('.track-row');
-    trackRows.forEach((row) => {
+    trackRows.forEach((row, idx) => {
         row.addEventListener('click', (e) => {
             e.preventDefault();
             e.stopPropagation();
             
-            const trackUrl = row.getAttribute('href');
-            if (trackUrl) {
-                const parts = trackUrl.split('/track/');
-                if (parts.length > 1) {
-                    const trackId = parts[1].split('?')[0];
-                    loadSpotifyTrack(trackId);
-                }
+            AppState.beatsIndex = idx;
+            trackRows.forEach(r => r.classList.remove('active-track'));
+            row.classList.add('active-track');
+            
+            // This updates both text metadata and the Spotify iframe src
+            loadTrack(idx);
+            
+            AudioSystem.playClickSound();
+            
+            if (!AppState.audioPlaying) {
+                togglePlayPause();
+            } else {
+                AudioSystem.startBeatEngine(idx);
             }
         });
     });
+
+    window.addEventListener('resize', positionSpotifyIframe);
 }
 
 function loadSpotifyTrack(trackId) {
     const iframe = document.getElementById('spotify-widget-iframe');
     if (iframe) {
-        iframe.src = `https://open.spotify.com/embed/track/${trackId}?utm_source=generator&theme=0`;
+        iframe.src = `https://open.spotify.com/embed/track/${trackId}?utm_source=generator&theme=0&autoplay=1`;
         AudioSystem.playSelectSound();
     }
 }
@@ -3695,20 +3729,19 @@ function playRandomSpotifyTrack() {
 
 function setupDiscsRotation() {
     const covers = [
-        'assets/based_nation_cover.jpg',
-        'assets/cash_out.jpg',
-        'assets/crazy_london.jpg',
-        'assets/de_rodillas.jpg',
-        'assets/disobey_vol2.jpg',
-        'assets/el_simon_cover.jpg',
-        'assets/es_lo_ke_hay.jpg',
-        'assets/first_rapper.jpg',
-        'assets/mac_and_cheese.jpg',
-        'assets/mejor_no.jpg',
-        'assets/sueno_permanente.jpg',
-        'assets/trip.jpg',
-        'assets/work_it_up.jpg',
-        'assets/yolonoto.jpg'
+        'https://i.scdn.co/image/ab67616d00004851e52578729a9a11599d15aa93', // BASED NATION
+        'https://i.scdn.co/image/ab67616d00001e024a0632ff95a0291dce19c4fe', // CASH OUT
+        'https://i.scdn.co/image/ab67616d00001e02c40f08ed588ecf50cd4e95c3', // Crazy London Pipol
+        'https://i.scdn.co/image/ab67616d00001e025eaf15c353e37cf4ccae2e97', // DE RODILLAS
+        'https://i.scdn.co/image/ab67616d000048512036e1bec1da38af2529e321', // DISOBEY VOL. II
+        'https://i.scdn.co/image/ab67616d000048513c867bce73e7dc5f3d749a51', // el simón
+        'https://i.scdn.co/image/ab67616d00004851b24aedd49b40541fbd5cfc87', // Mac and cheese
+        'https://i.scdn.co/image/ab67616d00004851b5284bb8956d2a5638eaa3d1', // Mejor no
+        'https://i.scdn.co/image/ab67616d00004851c68a323c0e84be4168e0adec', // Sueño Permanente
+        'https://i.scdn.co/image/ab67616d00001e0246c586034e1fa3f442e37520', // TRIP
+        'https://i.scdn.co/image/ab67616d00004851271cc3900a316bba6799adff', // Work It Up
+        'https://i.scdn.co/image/ab67616d000048510401806bcd3e71dd84aafa6f', // ENVIDIA / RIRI
+        'https://i.scdn.co/image/ab67616d00001e02a760e556b1a9e42457865391'  // First Rapper
     ];
     
     const vinylLabels = document.querySelectorAll('.vinyl-menu-item .vinyl-label');
