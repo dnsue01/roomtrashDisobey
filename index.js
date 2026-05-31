@@ -169,7 +169,7 @@ const AppState = {
     currentScreen: 'boot', // boot, menu, game, shows, beats, merch, bio
     menuIndex: 0,
     showsIndex: 0,
-    beatsIndex: 0,
+    beatsIndex: -1,
     merchIndex: 0,
     
     // Global User Stats / Game Save File
@@ -585,6 +585,8 @@ class AudioEngine {
         if (!this.ctx) return;
         
         const track = BEATS_DATA[trackId];
+        if (!track) return; // Silent fallback for artist catalog / invalid tracks
+        
         const tempo = track.tempo;
         const noteLength = 60 / tempo / 2; // Eighth notes
         
@@ -615,6 +617,8 @@ class AudioEngine {
         if (!this.ctx) return;
         
         const track = BEATS_DATA[trackId];
+        if (!track) return; // Silent fallback for artist catalog / invalid tracks
+        
         const tempo = track.tempo;
         const noteLength = 60 / tempo / 2; // Eighth notes
         
@@ -1211,6 +1215,8 @@ function selectMenuOption() {
         } else if (AppState.currentScreen === 'merch') {
             updateMerchDetails(AppState.merchIndex);
         }
+        
+        positionSpotifyIframe();
     }, 400);
 }
 
@@ -1255,6 +1261,8 @@ function closeActiveSubScreen() {
         document.getElementById('global-kills-count').textContent = AppState.zombieKills;
         // Calculate points
         document.getElementById('global-money-count').textContent = AppState.moneyValue.toFixed(2) + ' €';
+        
+        positionSpotifyIframe();
     }, 400);
 }
 
@@ -1488,15 +1496,37 @@ function setupBeatsPlayer() {
 }
 
 function loadTrack(idx) {
-    const track = BEATS_DATA[idx];
-    if (!track) return;
-    
     const hudTrackNum = document.getElementById('hud-track-num');
     const playerTrackName = document.getElementById('player-track-name');
     const playerTrackArtist = document.getElementById('player-track-artist');
     const playerTimeDuration = document.getElementById('player-time-duration');
     const playerTimeCurrent = document.getElementById('player-time-current');
     const playerProgressFill = document.getElementById('player-progress-fill');
+    const spotLink = document.getElementById('player-spotify-link');
+    const iframe = document.getElementById('spotify-widget-iframe');
+    
+    if (idx === undefined || idx === null || idx < 0) {
+        // Load artist profile default metadata
+        if (hudTrackNum) hudTrackNum.textContent = '--';
+        if (playerTrackName) playerTrackName.textContent = 'GIRA CATALOG (FULL)';
+        if (playerTrackArtist) playerTrackArtist.textContent = 'roomtrash6';
+        if (playerTimeDuration) playerTimeDuration.textContent = '--:--';
+        if (playerTimeCurrent) playerTimeCurrent.textContent = '0:00';
+        if (playerProgressFill) playerProgressFill.style.width = '0%';
+        if (spotLink) spotLink.href = 'https://open.spotify.com/intl-es/artist/1VdDHkm5XpSy9OZiNTCzjE';
+        
+        if (iframe) {
+            const autoplayFlag = AppState.audioPlaying ? '&autoplay=1' : '';
+            const artistEmbedSrc = `https://open.spotify.com/embed/artist/1VdDHkm5XpSy9OZiNTCzjE?utm_source=generator&theme=0${autoplayFlag}`;
+            if (!iframe.src.includes('artist/1VdDHkm5XpSy9OZiNTCzjE')) {
+                iframe.src = artistEmbedSrc;
+            }
+        }
+        return;
+    }
+    
+    const track = BEATS_DATA[idx];
+    if (!track) return;
     
     if (hudTrackNum) hudTrackNum.textContent = String(idx + 1).padStart(2, '0');
     if (playerTrackName) playerTrackName.textContent = track.name;
@@ -1505,12 +1535,10 @@ function loadTrack(idx) {
     if (playerTimeCurrent) playerTimeCurrent.textContent = '0:00';
     if (playerProgressFill) playerProgressFill.style.width = '0%';
     
-    const spotLink = document.getElementById('player-spotify-link');
     if (spotLink && track.spotifyUrl) {
         spotLink.href = track.spotifyUrl;
     }
 
-    const iframe = document.getElementById('spotify-widget-iframe');
     if (iframe && track.spotifyUrl) {
         const parts = track.spotifyUrl.split('/track/');
         if (parts.length > 1) {
@@ -1540,8 +1568,11 @@ function togglePlayPause() {
         AudioSystem.startBeatEngine(AppState.beatsIndex);
         startVisualizer();
         
-        const currentLengthStr = BEATS_DATA[AppState.beatsIndex].length;
-        const totalSeconds = parseLengthToSeconds(currentLengthStr);
+        let totalSeconds = 90; // Default fallback for artist page
+        if (BEATS_DATA[AppState.beatsIndex]) {
+            const currentLengthStr = BEATS_DATA[AppState.beatsIndex].length;
+            totalSeconds = parseLengthToSeconds(currentLengthStr);
+        }
         
         clearInterval(trackTimer);
         trackTimer = setInterval(() => {
@@ -3594,24 +3625,60 @@ setupGamepadPolling();
 function positionSpotifyIframe() {
     const host = document.getElementById('spotify-audio-host');
     const placeholder = document.getElementById('spotify-iframe-container');
+    const iframe = document.getElementById('spotify-widget-iframe');
     
     if (host && placeholder && AppState.currentScreen === 'beats') {
         const rect = placeholder.getBoundingClientRect();
-        host.style.transition = 'opacity 0.3s ease';
+        
+        // Ensure iframe has full height inside beats screen
+        if (iframe && iframe.getAttribute('height') !== '280') {
+            iframe.setAttribute('height', '280');
+        }
+        
+        // Mobile boundaries (Header 50px, Footer 44px)
+        const headerHeight = 50;
+        const footerHeight = 44;
+        const topBound = headerHeight + 5;
+        const bottomBound = window.innerHeight - footerHeight - 5;
+        
+        let opacity = '1';
+        let pointerEvents = 'auto';
+        
+        // Fade out if scrolled out of the viewable panel area
+        if (rect.top + 30 < topBound || rect.bottom - 30 > bottomBound) {
+            opacity = '0';
+            pointerEvents = 'none';
+        }
+        
         host.style.left = `${rect.left}px`;
         host.style.top = `${rect.top}px`;
         host.style.width = `${rect.width}px`;
         host.style.height = `${rect.height}px`;
-        host.style.opacity = '1';
-        host.style.pointerEvents = 'auto';
+        host.style.opacity = opacity;
+        host.style.pointerEvents = pointerEvents;
+        
+        host.classList.remove('collapsed');
+        host.classList.add('in-beats-screen');
     } else if (host) {
-        host.style.transition = 'opacity 0.3s ease, left 0s 0.3s, top 0s 0.3s';
-        host.style.left = '-9999px';
-        host.style.top = '-9999px';
-        host.style.width = '300px';
-        host.style.height = '380px';
-        host.style.opacity = '0.001';
-        host.style.pointerEvents = 'none';
+        host.classList.remove('in-beats-screen');
+        
+        // Ensure compact height when floating in the corner
+        if (iframe && iframe.getAttribute('height') !== '80') {
+            iframe.setAttribute('height', '80');
+        }
+        
+        host.style.left = '';
+        host.style.top = '';
+        host.style.width = '';
+        host.style.height = '';
+        host.style.opacity = '';
+        host.style.pointerEvents = 'auto';
+        
+        if (AppState.spotifyWidgetCollapsed) {
+            host.classList.add('collapsed');
+        } else {
+            host.classList.remove('collapsed');
+        }
     }
 }
 
@@ -3665,6 +3732,8 @@ function setupSpotifyIntegration() {
     }
 
     window.addEventListener('resize', positionSpotifyIframe);
+    // Listen to scroll events to update fixed overlay position instantly
+    window.addEventListener('scroll', positionSpotifyIframe, true);
 }
 
 function loadSpotifyTrack(trackId) {
@@ -3680,18 +3749,11 @@ function loadSpotifyTrack(trackId) {
 // ==========================================================================
 
 function runTicketronaScraper() {
-    const logContainer = document.getElementById('scraper-log');
-    if (!logContainer) return;
-    
-    logContainer.innerHTML = '';
-    
     const writeLog = (text, delay) => {
         return new Promise(resolve => {
             setTimeout(() => {
-                const line = document.createElement('div');
-                line.innerHTML = text;
-                logContainer.appendChild(line);
-                logContainer.scrollTop = logContainer.scrollHeight;
+                const cleanText = text.replace(/<[^>]*>/g, '');
+                console.log("[Ticketrona Scraper] " + cleanText);
                 resolve();
             }, delay);
         });
@@ -3699,53 +3761,47 @@ function runTicketronaScraper() {
 
     // Sequential simulation logs & fetch call
     (async () => {
-        await writeLog("&gt; INICIANDO SCRAPER DE ENTRADAS [TICKETRONA DEFIANT ENGINE v1.2]...", 100);
-        await writeLog("&gt; CONECTANDO A SERVIDORES DE TICKETRONA.COM EN ESPAÑA...", 400);
-        await writeLog("&gt; SOLICITANDO BÚSQUEDA DEL ARTISTA: <span style='color:#ff1744; font-weight:bold;'>roomtrash6</span>...", 500);
+        await writeLog("> INICIANDO SCRAPER DE ENTRADAS [TICKETRONA DEFIANT ENGINE v1.2]...", 100);
+        await writeLog("> CONECTANDO A SERVIDORES DE TICKETRONA.COM EN ESPAÑA...", 400);
+        await writeLog("> SOLICITANDO BÚSQUEDA DEL ARTISTA: roomtrash6...", 500);
         
         try {
             // Actual fetch request to Ticketrona via AllOrigins CORS-bypass proxy
             const targetUrl = 'https://www.ticketrona.com/evento/christ-dillinger-acid-soulja-roomtrash6-cybernene-en-madrid';
             const fetchUrl = 'https://api.allorigins.win/raw?url=' + encodeURIComponent(targetUrl);
             
-            await writeLog("&gt; ENVIANDO REQUEST GET A: " + targetUrl + "...", 400);
+            await writeLog("> ENVIANDO REQUEST GET A: " + targetUrl + "...", 400);
             
             const response = await fetch(fetchUrl);
             
             if (response.status === 200) {
-                await writeLog("&gt; <span style='color:#39ff14;'>[CONEXIÓN EXITOSA]</span> Respuesta recibida del servidor.", 300);
-                await writeLog("&gt; ANALIZANDO ESTRUCTURA DOM DE LA COMPRA DE ENTRADAS...", 300);
-                await writeLog("&gt; <span style='color:#39ff14;'>[LOGRADO]</span> Se detectó evento activo de roomtrash6 en Madrid.", 200);
+                await writeLog("> [CONEXIÓN EXITOSA] Respuesta recibida del servidor.", 300);
+                await writeLog("> ANALIZANDO ESTRUCTURA DOM DE LA COMPRA DE ENTRADAS...", 300);
+                await writeLog("> [LOGRADO] Se detectó evento activo de roomtrash6 en Madrid.", 200);
             } else {
                 // Cloudflare 403 or other proxy blocks
-                await writeLog("&gt; <span style='color:#ff1744;'>[AVISO]</span> Servidor respondió con código " + response.status + " (Cloudflare DDoS Shield active).", 400);
-                await writeLog("&gt; EJECUTANDO PROTOCOLO 'BYPASS CACHE HACK'...", 300);
-                await writeLog("&gt; <span style='color:#39ff14;'>[CONTRABANDO EXITOSO]</span> Conexión cifrada establecida con base de datos de backup local.", 400);
+                await writeLog("> [AVISO] Servidor respondió con código " + response.status + " (Cloudflare DDoS Shield active).", 400);
+                await writeLog("> EJECUTANDO PROTOCOLO 'BYPASS CACHE HACK'...", 300);
+                await writeLog("> [CONTRABANDO EXITOSO] Conexión cifrada establecida con base de datos de backup local.", 400);
             }
         } catch (err) {
-            await writeLog("&gt; <span style='color:#ff1744;'>[ERROR DE RED]</span> No se pudo establecer conexión HTTP: " + err.message, 400);
-            await writeLog("&gt; CARGANDO BASE DE DATOS DE COPIA DE SEGURIDAD LOCAL...", 300);
-            await writeLog("&gt; <span style='color:#39ff14;'>[RESPALDO CARGADO]</span> Base de datos cargada.", 300);
+            await writeLog("> [ERROR DE RED] No se pudo establecer conexión HTTP: " + err.message, 400);
+            await writeLog("> CARGANDO BASE DE DATOS DE COPIA DE SEGURIDAD LOCAL...", 300);
+            await writeLog("> [RESPALDO CARGADO] Base de datos cargada.", 300);
         }
         
         // Final results log
-        await writeLog("&gt; -------------------------------------------------------------", 200);
-        await writeLog("&gt; <span style='color:#39ff14; font-weight:bold;'>[RESULTADOS BÚSQUEDA]</span> 1 show activo disponible para roomtrash6 en Madrid (España).", 200);
+        await writeLog("> -------------------------------------------------------------", 200);
+        await writeLog("> [RESULTADOS BÚSQUEDA] 1 show activo disponible para roomtrash6 en Madrid (España).", 200);
     })();
 }
 
 function playRandomSpotifyTrack() {
     const iframe = document.getElementById('spotify-widget-iframe');
-    if (iframe && typeof BEATS_DATA !== 'undefined' && BEATS_DATA.length > 0) {
-        const randomIdx = Math.floor(Math.random() * BEATS_DATA.length);
-        const track = BEATS_DATA[randomIdx];
-        const parts = track.spotifyUrl.split('/track/');
-        if (parts.length > 1) {
-            const trackId = parts[1].split('?')[0];
-            iframe.src = "https://open.spotify.com/embed/track/" + trackId + "?utm_source=generator&theme=0&autoplay=1";
-            AppState.beatsIndex = randomIdx;
-            console.log("Autoplaying random Spotify track: " + track.name);
-        }
+    if (iframe) {
+        iframe.src = "https://open.spotify.com/embed/artist/1VdDHkm5XpSy9OZiNTCzjE?utm_source=generator&theme=0&autoplay=1";
+        AppState.beatsIndex = -1;
+        console.log("Autoplaying Spotify artist catalog profile on boot: 1VdDHkm5XpSy9OZiNTCzjE");
     }
 }
 

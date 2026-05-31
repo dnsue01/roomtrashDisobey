@@ -1327,11 +1327,68 @@ a, button, .menu-opt, .save-slot-row, .merch-item, .track-row, .inv-slot {
 .save-slot-row {
     background: rgba(255,255,255,0.02);
     border: 2px solid rgba(255, 23, 68, 0.18);
-    padding: 12px 15px;
+    display: flex;
+    flex-direction: column;
+    transition: all 0.2s ease;
+    overflow: hidden;
+}
+
+.save-slot-main {
     display: flex;
     align-items: center;
     gap: 15px;
-    transition: all 0.2s ease;
+    padding: 12px 15px;
+    width: 100%;
+    box-sizing: border-box;
+    cursor: pointer;
+}
+
+.save-slot-arrow {
+    margin-left: auto;
+    font-size: 0.8rem;
+    color: var(--horror-red);
+    transition: transform 0.3s ease;
+}
+
+.save-slot-row.active-slot .save-slot-arrow {
+    transform: rotate(180deg);
+}
+
+.save-slot-mobile-details {
+    max-height: 0;
+    opacity: 0;
+    overflow: hidden;
+    padding: 0 15px;
+    box-sizing: border-box;
+    transition: max-height 0.3s cubic-bezier(0.19, 1, 0.22, 1), padding 0.3s ease, opacity 0.3s ease;
+    border-top: 1px dashed rgba(255, 23, 68, 0);
+    background: rgba(0, 0, 0, 0.3);
+}
+
+.mobile-details-inner {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    font-size: 0.8rem;
+    line-height: 1.4;
+    color: #cbd5e1;
+}
+
+.mobile-details-inner p {
+    margin: 0;
+}
+
+.mobile-details-actions {
+    margin-top: 8px;
+    display: flex;
+    gap: 10px;
+}
+
+.mobile-details-actions .action-btn {
+    padding: 8px 15px;
+    font-size: 0.75rem;
+    width: auto;
+    margin: 0;
 }
 
 .save-slot-row:hover {
@@ -2351,6 +2408,12 @@ a, button, .menu-opt, .save-slot-row, .merch-item, .track-row, .inv-slot {
     overflow: hidden;
 }
 
+/* Animation for spinning vinyl */
+@keyframes spin-vinyl {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
 .spotify-player-widget.collapsed {
     width: 50px;
     height: 50px;
@@ -2359,16 +2422,18 @@ a, button, .menu-opt, .save-slot-row, .merch-item, .track-row, .inv-slot {
     display: flex;
     align-items: center;
     justify-content: center;
-    background: #1DB954; /* Spotify green */
-    border: 2px solid #fff;
-    box-shadow: 0 0 15px rgba(29, 185, 84, 0.7);
+    background: #000;
+    border: 2px solid var(--horror-red);
+    box-shadow: 0 0 15px rgba(255, 23, 68, 0.6);
     bottom: 25px;
     right: 25px;
+    color: var(--horror-red);
+    text-shadow: var(--horror-red-glow);
 }
 
 .spotify-player-widget.collapsed:hover {
     transform: scale(1.1);
-    box-shadow: 0 0 25px rgba(29, 185, 84, 1);
+    box-shadow: 0 0 25px rgba(255, 23, 68, 1);
 }
 
 .spotify-player-widget.collapsed .widget-expanded-content {
@@ -2379,6 +2444,7 @@ a, button, .menu-opt, .save-slot-row, .merch-item, .track-row, .inv-slot {
     display: block;
     font-size: 1.5rem;
     line-height: 1;
+    animation: spin-vinyl 4s linear infinite;
 }
 
 .spotify-player-widget .widget-collapsed-icon {
@@ -2429,11 +2495,11 @@ a, button, .menu-opt, .save-slot-row, .merch-item, .track-row, .inv-slot {
 
 /* Spotify Player overrides inside beats screen */
 #spotify-audio-host.in-beats-screen {
-    position: absolute !important;
+    position: fixed !important;
     border: none !important;
     box-shadow: none !important;
     background: transparent !important;
-    transition: opacity 0.3s ease !important;
+    transition: none !important;
     padding: 0 !important;
     margin: 0 !important;
     overflow: hidden !important;
@@ -2464,4 +2530,188 @@ a, button, .menu-opt, .save-slot-row, .merch-item, .track-row, .inv-slot {
 }
 #spotify-audio-host.in-beats-screen .widget-api-badge {
     display: none !important;
+}
+
+/* Responsive dossier overrides for shows sub-screen */
+@media (min-width: 901px) {
+    .shows-desktop-layout {
+        display: grid;
+        grid-template-columns: 1.2fr 1fr;
+        gap: 2rem;
+        width: 100%;
+        overflow: hidden;
+    }
+    .shows-mobile-layout {
+        display: none !important;
+    }
+}
+
+@media (max-width: 900px) {
+    .shows-desktop-layout {
+        display: none !important;
+    }
+    .shows-mobile-layout {
+        display: flex !important;
+        flex-direction: column;
+        gap: 15px;
+        padding-bottom: 20px;
+        width: 100%;
+    }
+    
+    .show-ticket-card {
+        background: rgba(15, 3, 5, 0.85);
+        border: 2px solid rgba(255, 23, 68, 0.4);
+        box-shadow: 0 0 15px rgba(255, 23, 68, 0.2);
+        border-radius: 8px;
+        padding: 16px;
+        position: relative;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .show-ticket-card.concluded-ticket {
+        border-color: rgba(255, 255, 255, 0.15);
+        box-shadow: none;
+        opacity: 0.8;
+    }
+    
+    .ticket-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 1px dashed rgba(255, 23, 68, 0.3);
+        padding-bottom: 8px;
+    }
+    
+    .show-ticket-card.concluded-ticket .ticket-header {
+        border-bottom-color: rgba(255, 255, 255, 0.1);
+    }
+    
+    .ticket-serial {
+        font-family: var(--font-mono);
+        font-size: 0.65rem;
+        color: #64748b;
+    }
+    
+    .ticket-status {
+        font-family: var(--font-mono);
+        font-size: 0.65rem;
+        font-weight: bold;
+        padding: 2px 6px;
+        border-radius: 4px;
+    }
+    
+    .ticket-status.active-status {
+        background: rgba(57, 255, 20, 0.1);
+        color: #39ff14;
+        text-shadow: 0 0 5px rgba(57, 255, 20, 0.5);
+        border: 1px solid rgba(57, 255, 20, 0.3);
+    }
+    
+    .ticket-status.concluded-status {
+        background: rgba(255, 255, 255, 0.05);
+        color: #94a3b8;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .ticket-title {
+        font-family: var(--font-mono);
+        font-size: 1.1rem;
+        color: #fff;
+        margin: 5px 0 0 0;
+        text-transform: uppercase;
+        text-shadow: 0 0 8px rgba(255, 255, 255, 0.2);
+    }
+    
+    .show-ticket-card.concluded-ticket .ticket-title {
+        color: #cbd5e1;
+        text-shadow: none;
+    }
+    
+    .ticket-barcode {
+        font-size: 0.55rem;
+        color: rgba(255, 23, 68, 0.4);
+        letter-spacing: 2px;
+        font-weight: bold;
+        text-align: center;
+        margin: 2px 0;
+    }
+    
+    .show-ticket-card.concluded-ticket .ticket-barcode {
+        color: rgba(255, 255, 255, 0.15);
+    }
+    
+    .ticket-meta {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        font-family: var(--font-mono);
+        font-size: 0.75rem;
+        color: var(--horror-red);
+    }
+    
+    .show-ticket-card.concluded-ticket .ticket-meta {
+        color: #94a3b8;
+    }
+    
+    .ticket-meta strong {
+        color: #94a3b8;
+    }
+    
+    .ticket-desc {
+        font-size: 0.8rem;
+        line-height: 1.4;
+        color: #cbd5e1;
+        margin: 0;
+    }
+    
+    .ticket-stub-divider {
+        border-top: 2px dashed rgba(255, 23, 68, 0.3);
+        margin: 10px 0;
+        position: relative;
+    }
+    
+    .show-ticket-card.concluded-ticket .ticket-stub-divider {
+        border-top-color: rgba(255, 255, 255, 0.1);
+    }
+    
+    .ticket-stub-divider .punch-hole {
+        position: absolute;
+        width: 16px;
+        height: 16px;
+        background: #000;
+        border-radius: 50%;
+        top: -9px;
+    }
+    
+    .ticket-stub-divider .punch-hole.left {
+        left: -25px;
+        border-right: 2px solid rgba(255, 23, 68, 0.4);
+    }
+    
+    .show-ticket-card.concluded-ticket .ticket-stub-divider .punch-hole.left {
+        border-right-color: rgba(255, 255, 255, 0.15);
+    }
+    
+    .ticket-stub-divider .punch-hole.right {
+        right: -25px;
+        border-left: 2px solid rgba(255, 23, 68, 0.4);
+    }
+    
+    .show-ticket-card.concluded-ticket .ticket-stub-divider .punch-hole.right {
+        border-left-color: rgba(255, 255, 255, 0.15);
+    }
+    
+    .ticket-action-area {
+        display: flex;
+        justify-content: center;
+    }
+    
+    .ticket-action-area .action-btn {
+        width: 100%;
+        text-align: center;
+        margin: 0;
+    }
 }

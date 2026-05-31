@@ -306,70 +306,181 @@
                     <div class="file-tag font-mono">CÓDIGO: CONFIDENCIAL_RT6</div>
                 </div>
             </div>
-            <!-- Live Scraper terminal log output -->
-            <div class="shows-scraper-console font-mono" style="background: rgba(0, 0, 0, 0.85); border: 1px solid var(--horror-red); padding: 12px; margin: 0 15px 15px 15px; border-radius: 6px; font-size: 0.75rem; color: #39ff14; text-shadow: 0 0 5px rgba(57, 255, 20, 0.4); line-height: 1.4; box-shadow: 0 0 10px rgba(255, 23, 68, 0.15);">
-                <div id="scraper-log" style="max-height: 80px; overflow-y: auto;">
-                    <div>&gt; INICIANDO CONEXIÓN CON TICKETRONA API (roomtrash6)...</div>
-                </div>
-            </div>
             <div class="sub-screen-body layout-shows">
-                <div class="shows-list-panel retro-scroll">
-                    <!-- classified save slot files -->
-                    <div class="save-slot-row active-slot" data-show-id="0">
-                        <div class="save-slot-icon">📁</div>
-                        <div class="save-slot-info">
-                            <div class="save-title">SHOW: MADRID @ CAFÉ BERLÍN</div>
-                            <div class="save-meta">28 JUN 2026 | ENTRADA DISPONIBLE | 136 KB</div>
-                        </div>
-                    </div>
-                    <div class="save-slot-row" data-show-id="1">
-                        <div class="save-slot-icon">📁</div>
-                        <div class="save-slot-info">
-                            <div class="save-title">CONCIERTO REALIZADO: BARCELONA @ RAZZMATAZZ 3</div>
-                            <div class="save-meta">10 APR 2026 | CONCLUIDO | 120 KB</div>
-                        </div>
-                    </div>
-                    <div class="save-slot-row" data-show-id="2">
-                        <div class="save-slot-icon">📁</div>
-                        <div class="save-slot-info">
-                            <div class="save-title">CONCIERTO REALIZADO: MADRID @ SALA UNI</div>
-                            <div class="save-meta">17 APR 2026 | CONCLUIDO | 120 KB</div>
-                        </div>
-                    </div>
-                    <div class="save-slot-row" data-show-id="3">
-                        <div class="save-slot-icon">📁</div>
-                        <div class="save-slot-info">
-                            <div class="save-title">CONCIERTO REALIZADO: VALENCIA @ SPOOK CLUB</div>
-                            <div class="save-meta">20 MAR 2026 | CONCLUIDO | 115 KB</div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="show-details-panel diamond-frame slime-drips">
-                    <div class="details-card">
-                        <div class="details-icon-3d">
-                            <div class="cube">
-                                <div class="face front">☣</div>
-                                <div class="face back">☣</div>
-                                <div class="face left">☣</div>
-                                <div class="face right">☣</div>
-                                <div class="face top">☣</div>
-                                <div class="face bottom">☣</div>
+                <!-- Desktop Dossier Layout -->
+                <div class="shows-desktop-layout">
+                    <div class="shows-list-panel retro-scroll">
+                        <!-- classified save slot files -->
+                        <div class="save-slot-row active-slot" data-show-id="0">
+                            <div class="save-slot-main">
+                                <div class="save-slot-icon">📁</div>
+                                <div class="save-slot-info">
+                                    <div class="save-title">SHOW: MADRID @ CAFÉ BERLÍN</div>
+                                    <div class="save-meta">28 JUN 2026 | ENTRADA DISPONIBLE | 136 KB</div>
+                                </div>
+                                <div class="save-slot-arrow">▼</div>
                             </div>
                         </div>
-                        <h3 id="detail-show-title">MADRID @ CAFÉ BERLÍN</h3>
-                        <p class="details-desc" id="detail-show-venue">Café Berlín, Madrid (España)</p>
-                        <table class="details-table">
-                            <tr><td>OPERACIÓN:</td><td>CONCIERTO EN VIVO / BASED NATION</td></tr>
-                            <tr><td>FECHA GIRA:</td><td id="detail-show-date">28 de Junio de 2026</td></tr>
-                            <tr><td>ESTADO:</td><td id="detail-show-status" style="color: #39ff14;">EN CURSO / ENTRADAS</td></tr>
-                        </table>
-                        <div class="details-actions">
-                            <a href="https://www.ticketrona.com/evento/christ-dillinger-acid-soulja-roomtrash6-cybernene-en-madrid" target="_blank" id="btn-buy-tickets" class="action-btn blink-border">
-                                <span class="btn-icon">⚡</span> EJECUTAR MISIÓN (ENTRADAS)
+                        
+                        <div class="save-slot-row" data-show-id="1">
+                            <div class="save-slot-main">
+                                <div class="save-slot-icon">📁</div>
+                                <div class="save-slot-info">
+                                    <div class="save-title">CONCIERTO REALIZADO: BARCELONA @ RAZZMATAZZ 3</div>
+                                    <div class="save-meta">10 APR 2026 | CONCLUIDO | 120 KB</div>
+                                </div>
+                                <div class="save-slot-arrow">▼</div>
+                            </div>
+                        </div>
+                        
+                        <div class="save-slot-row" data-show-id="2">
+                            <div class="save-slot-main">
+                                <div class="save-slot-icon">📁</div>
+                                <div class="save-slot-info">
+                                    <div class="save-title">CONCIERTO REALIZADO: MADRID @ SALA UNI</div>
+                                    <div class="save-meta">17 APR 2026 | CONCLUIDO | 120 KB</div>
+                                </div>
+                                <div class="save-slot-arrow">▼</div>
+                            </div>
+                        </div>
+                        
+                        <div class="save-slot-row" data-show-id="3">
+                            <div class="save-slot-main">
+                                <div class="save-slot-icon">📁</div>
+                                <div class="save-slot-info">
+                                    <div class="save-title">CONCIERTO REALIZADO: VALENCIA @ SPOOK CLUB</div>
+                                    <div class="save-meta">20 MAR 2026 | CONCLUIDO | 115 KB</div>
+                                </div>
+                                <div class="save-slot-arrow">▼</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="show-details-panel diamond-frame slime-drips">
+                        <div class="details-card">
+                            <div class="details-icon-3d">
+                                <div class="cube">
+                                    <div class="face front">☣</div>
+                                    <div class="face back">☣</div>
+                                    <div class="face left">☣</div>
+                                    <div class="face right">☣</div>
+                                    <div class="face top">☣</div>
+                                    <div class="face bottom">☣</div>
+                                </div>
+                            </div>
+                            <h3 id="detail-show-title">MADRID @ CAFÉ BERLÍN</h3>
+                            <p class="details-desc" id="detail-show-venue">Café Berlín, Madrid (España)</p>
+                            <table class="details-table">
+                                <tr><td>OPERACIÓN:</td><td>CONCIERTO EN VIVO / BASED NATION</td></tr>
+                                <tr><td>FECHA GIRA:</td><td id="detail-show-date">28 de Junio de 2026</td></tr>
+                                <tr><td>ESTADO:</td><td id="detail-show-status" style="color: #39ff14;">EN CURSO / ENTRADAS</td></tr>
+                            </table>
+                            <div class="details-actions">
+                                <a href="https://www.ticketrona.com/evento/christ-dillinger-acid-soulja-roomtrash6-cybernene-en-madrid" target="_blank" id="btn-buy-tickets" class="action-btn blink-border">
+                                    <span class="btn-icon">⚡</span> EJECUTAR MISIÓN (ENTRADAS)
+                                </a>
+                                <button id="btn-delete-show" class="action-btn secondary-btn">
+                                    <span class="btn-icon">🗑️</span> ELIMINAR EXPEDIENTE
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Mobile Ticket Layout -->
+                <div class="shows-mobile-layout">
+                    <!-- Ticket Card 1 (Active) -->
+                    <div class="show-ticket-card">
+                        <div class="ticket-header">
+                            <span class="ticket-serial">#RT6-001</span>
+                            <span class="ticket-status active-status">⚡ ENTRADAS DISPONIBLES</span>
+                        </div>
+                        <h3 class="ticket-title">MADRID @ CAFÉ BERLÍN</h3>
+                        <div class="ticket-barcode font-mono">||||||| | ||| || | ||||| | |||| GIRA-RT6-2026</div>
+                        <div class="ticket-meta">
+                            <div><strong>FECHA:</strong> 28 JUNIO 2026</div>
+                            <div><strong>LUGAR:</strong> Café Berlín, Madrid</div>
+                        </div>
+                        <p class="ticket-desc">Concierto oficial en Madrid junto a Christ Dillinger, Acid Souljah y Cybernene. Adquiere tu entrada en el enlace.</p>
+                        <div class="ticket-stub-divider">
+                            <div class="punch-hole left"></div>
+                            <div class="punch-hole right"></div>
+                        </div>
+                        <div class="ticket-action-area">
+                            <a href="https://www.ticketrona.com/evento/christ-dillinger-acid-soulja-roomtrash6-cybernene-en-madrid" target="_blank" class="action-btn blink-border">
+                                ⚡ COMPRAR ENTRADAS
                             </a>
-                            <button id="btn-delete-show" class="action-btn secondary-btn">
-                                <span class="btn-icon">🗑️</span> ELIMINAR EXPEDIENTE
+                        </div>
+                    </div>
+
+                    <!-- Ticket Card 2 (Past) -->
+                    <div class="show-ticket-card concluded-ticket">
+                        <div class="ticket-header">
+                            <span class="ticket-serial">#RT6-002</span>
+                            <span class="ticket-status concluded-status">📁 CONCLUIDO</span>
+                        </div>
+                        <h3 class="ticket-title">BARCELONA @ RAZZMATAZZ 3</h3>
+                        <div class="ticket-barcode font-mono">||||||| | ||| || | ||||| | |||| GIRA-RT6-2026</div>
+                        <div class="ticket-meta">
+                            <div><strong>FECHA:</strong> 10 ABRIL 2026</div>
+                            <div><strong>LUGAR:</strong> Sala Razzmatazz 3, Barcelona</div>
+                        </div>
+                        <p class="ticket-desc">Concierto realizado. Presentación oficial del colectivo DISOBEY en la capital catalana. Aforo completo.</p>
+                        <div class="ticket-stub-divider">
+                            <div class="punch-hole left"></div>
+                            <div class="punch-hole right"></div>
+                        </div>
+                        <div class="ticket-action-area">
+                            <button class="action-btn secondary-btn" style="pointer-events: none;">
+                                📁 CONCIERTO REALIZADO
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Ticket Card 3 (Past) -->
+                    <div class="show-ticket-card concluded-ticket">
+                        <div class="ticket-header">
+                            <span class="ticket-serial">#RT6-003</span>
+                            <span class="ticket-status concluded-status">📁 CONCLUIDO</span>
+                        </div>
+                        <h3 class="ticket-title">MADRID @ SALA UNI</h3>
+                        <div class="ticket-barcode font-mono">||||||| | ||| || | ||||| | |||| GIRA-RT6-2026</div>
+                        <div class="ticket-meta">
+                            <div><strong>FECHA:</strong> 17 ABRIL 2026</div>
+                            <div><strong>LUGAR:</strong> Sala Uni, Madrid</div>
+                        </div>
+                        <p class="ticket-desc">Concierto de doble fecha en Madrid en la Sala Uni. Éxito total de asistencia.</p>
+                        <div class="ticket-stub-divider">
+                            <div class="punch-hole left"></div>
+                            <div class="punch-hole right"></div>
+                        </div>
+                        <div class="ticket-action-area">
+                            <button class="action-btn secondary-btn" style="pointer-events: none;">
+                                📁 CONCIERTO REALIZADO
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Ticket Card 4 (Past) -->
+                    <div class="show-ticket-card concluded-ticket">
+                        <div class="ticket-header">
+                            <span class="ticket-serial">#RT6-004</span>
+                            <span class="ticket-status concluded-status">📁 CONCLUIDO</span>
+                        </div>
+                        <h3 class="ticket-title">VALENCIA @ SPOOK CLUB</h3>
+                        <div class="ticket-barcode font-mono">||||||| | ||| || | ||||| | |||| GIRA-RT6-2026</div>
+                        <div class="ticket-meta">
+                            <div><strong>FECHA:</strong> 20 MARZO 2026</div>
+                            <div><strong>LUGAR:</strong> Spook Club, Valencia</div>
+                        </div>
+                        <p class="ticket-desc">Concierto en Spook Club con Acid Souljah, Cybernene e Ynestrosa. Despliegue de bajos completado.</p>
+                        <div class="ticket-stub-divider">
+                            <div class="punch-hole left"></div>
+                            <div class="punch-hole right"></div>
+                        </div>
+                        <div class="ticket-action-area">
+                            <button class="action-btn secondary-btn" style="pointer-events: none;">
+                                📁 CONCIERTO REALIZADO
                             </button>
                         </div>
                     </div>
