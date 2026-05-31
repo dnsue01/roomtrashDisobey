@@ -75,7 +75,20 @@
                     </div>
                 </button>
 
-                <button class="vinyl-menu-item menu-opt" data-screen="bio" data-index="1">
+                <button class="vinyl-menu-item menu-opt" data-screen="shows" data-index="1">
+                    <div class="vmenu-disc">
+                        <div class="vinyl-grooves"></div>
+                        <div class="vinyl-label" style="background-image: url('assets/disobey_vol2.jpg');"></div>
+                        <div class="vinyl-shine"></div>
+                        <div class="vmenu-disc-icon">📁</div>
+                    </div>
+                    <div class="vmenu-label">
+                        <span class="vmenu-title font-mono">SHOWS</span>
+                        <span class="vmenu-sub font-mono">GIRA</span>
+                    </div>
+                </button>
+
+                <button class="vinyl-menu-item menu-opt" data-screen="bio" data-index="2">
                     <div class="vmenu-disc">
                         <div class="vinyl-grooves"></div>
                         <div class="vinyl-label" style="background-image: url('assets/sueno_permanente.jpg');"></div>
@@ -269,6 +282,86 @@
             </div>
         </section>
 
+        <!-- 2.2 TOURS / CLASSIFIED FILE SUB-SCREEN -->
+        <section id="screen-shows" class="sub-screen grunge-panel hidden">
+            <div class="sub-screen-header">
+                <div style="display: flex; align-items: center; gap: 15px;">
+                    <button class="sub-screen-back-btn action-btn secondary-btn font-mono" style="padding: 5px 12px; font-size: 0.8rem; margin: 0; width: auto; font-weight: bold;">← MENÚ</button>
+                    <h2>EXPEDIENTE DE SHOWS (GIRA)</h2>
+                </div>
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <div class="file-tag font-mono">CÓDIGO: CONFIDENCIAL_RT6</div>
+                </div>
+            </div>
+            <div class="sub-screen-body layout-shows">
+                <div class="shows-list-panel retro-scroll">
+                    <!-- classified save slot files -->
+                    <div class="save-slot-row active-slot" data-show-id="0">
+                        <div class="save-slot-icon">📁</div>
+                        <div class="save-slot-info">
+                            <div class="save-title">SHOW: MADRID @ CAFÉ BERLÍN</div>
+                            <div class="save-meta">28 JUN 2026 | ENTRADA DISPONIBLE | 136 KB</div>
+                        </div>
+                    </div>
+                    <div class="save-slot-row" data-show-id="1">
+                        <div class="save-slot-icon">📁</div>
+                        <div class="save-slot-info">
+                            <div class="save-title">CONCIERTO REALIZADO: BARCELONA @ RAZZMATAZZ 3</div>
+                            <div class="save-meta">10 APR 2026 | CONCLUIDO | 120 KB</div>
+                        </div>
+                    </div>
+                    <div class="save-slot-row" data-show-id="2">
+                        <div class="save-slot-icon">📁</div>
+                        <div class="save-slot-info">
+                            <div class="save-title">CONCIERTO REALIZADO: MADRID @ SALA UNI</div>
+                            <div class="save-meta">17 APR 2026 | CONCLUIDO | 120 KB</div>
+                        </div>
+                    </div>
+                    <div class="save-slot-row" data-show-id="3">
+                        <div class="save-slot-icon">📁</div>
+                        <div class="save-slot-info">
+                            <div class="save-title">CONCIERTO REALIZADO: VALENCIA @ SPOOK CLUB</div>
+                            <div class="save-meta">20 MAR 2026 | CONCLUIDO | 115 KB</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="show-details-panel diamond-frame slime-drips">
+                    <div class="details-card">
+                        <div class="details-icon-3d">
+                            <div class="cube">
+                                <div class="face front">☣</div>
+                                <div class="face back">☣</div>
+                                <div class="face left">☣</div>
+                                <div class="face right">☣</div>
+                                <div class="face top">☣</div>
+                                <div class="face bottom">☣</div>
+                            </div>
+                        </div>
+                        <h3 id="detail-show-title">MADRID @ CAFÉ BERLÍN</h3>
+                        <p class="details-desc" id="detail-show-venue">Café Berlín, Madrid (España)</p>
+                        <table class="details-table">
+                            <tr><td>OPERACIÓN:</td><td>CONCIERTO EN VIVO / BASED NATION</td></tr>
+                            <tr><td>FECHA GIRA:</td><td id="detail-show-date">28 de Junio de 2026</td></tr>
+                            <tr><td>ESTADO:</td><td id="detail-show-status" style="color: #39ff14;">EN CURSO / ENTRADAS</td></tr>
+                        </table>
+                        <div class="details-actions">
+                            <a href="#" target="_blank" id="btn-buy-tickets" class="action-btn blink-border">
+                                <span class="btn-icon">⚡</span> EJECUTAR MISIÓN (ENTRADAS)
+                            </a>
+                            <button id="btn-delete-show" class="action-btn secondary-btn">
+                                <span class="btn-icon">🗑️</span> ELIMINAR EXPEDIENTE
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Back button at the bottom of sub-screen -->
+            <button class="action-btn sub-screen-back-btn font-mono" style="margin-top: 15px; width: 100%; font-size: 0.85rem; max-width: 300px; align-self: center;">
+                ← VOLVER AL MENÚ
+            </button>
+        </section>
+
         <!-- 2.3 SAVE ROOM / MUSIC PLAYER SUB-SCREEN -->
         <section id="screen-beats" class="sub-screen grunge-panel hidden">
             <div class="sub-screen-header">
@@ -433,6 +526,24 @@
             </div>
         </footer>
         
+        <!-- Spotify Floating Player Widget -->
+        <div id="spotify-player-widget" class="spotify-player-widget collapsed">
+            <div class="widget-collapsed-icon">💿</div>
+            <div class="widget-expanded-content">
+                <div class="widget-header">
+                    <span class="widget-title">SPOTIFY MIXTAPE</span>
+                    <button class="widget-close-btn" id="btn-minimize-spotify">✕</button>
+                </div>
+                <div class="widget-body">
+                    <iframe id="spotify-widget-iframe" src="https://open.spotify.com/embed/track/4jVnK5M0mC3n0Rz5E7gQ5R?utm_source=generator&theme=0" width="100%" height="80" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy" style="border-radius: 8px;"></iframe>
+                    <div class="widget-api-badge font-mono" style="font-size: 0.55rem; color: #39ff14; text-shadow: 0 0 5px rgba(57,255,20,0.5); text-align: center; margin-top: 5px; line-height: 1.3;">
+                        API STATUS: CONNECTED<br>
+                        CLIENT_ID: 5ca413925b6845f6951ce518cbbaa44d
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- Floating Y2K Parental Advisory badge (Street Mixtape style) -->
         <div class="advisory-badge-floating">
             <div class="adv-text-top">PARENTAL</div>

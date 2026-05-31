@@ -209,8 +209,8 @@ function loadGameProgress() {
     if (ptsDispEl) ptsDispEl.textContent = AppState.basedPoints;
 }
 
-const SCREEN_MAPPING = ['screen-game', 'screen-bio'];
-const SCREEN_NAMES = ['game', 'bio'];
+const SCREEN_MAPPING = ['screen-game', 'screen-shows', 'screen-bio'];
+const SCREEN_NAMES = ['game', 'shows', 'bio'];
 
 // ==========================================================================
 // 3. SYNTHESIZER RETRO AUDIO ENGINE (Web Audio API)
@@ -971,6 +971,7 @@ document.addEventListener('DOMContentLoaded', () => {
     setupSubScreenCloseButtons();
     setupShopSystem();
     loadGameProgress();
+    setupSpotifyPlayerWidget();
 });
 
 // Sub-screen back click hooks
@@ -3566,3 +3567,59 @@ function navigateList(type, direction) {
 // Initialize minigame canvas hooks
 setupZombieGame();
 setupGamepadPolling();
+
+// ==========================================================================
+// 7. SPOTIFY API WIDGET SYSTEM
+// ==========================================================================
+
+function setupSpotifyPlayerWidget() {
+    const widget = document.getElementById('spotify-player-widget');
+    const minimizeBtn = document.getElementById('btn-minimize-spotify');
+    
+    if (widget) {
+        widget.addEventListener('click', () => {
+            if (widget.classList.contains('collapsed')) {
+                widget.classList.remove('collapsed');
+                AudioSystem.playClickSound();
+            }
+        });
+    }
+    
+    if (minimizeBtn) {
+        minimizeBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            widget.classList.add('collapsed');
+            AudioSystem.playBackSound();
+        });
+    }
+    
+    // Bind click events on all track rows inside beats screen to load the track inside this iframe
+    const trackRows = document.querySelectorAll('.track-row');
+    trackRows.forEach((row) => {
+        row.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            
+            const trackUrl = row.getAttribute('href');
+            if (trackUrl) {
+                const parts = trackUrl.split('/track/');
+                if (parts.length > 1) {
+                    const trackId = parts[1].split('?')[0];
+                    loadSpotifyTrack(trackId);
+                }
+            }
+        });
+    });
+}
+
+function loadSpotifyTrack(trackId) {
+    const iframe = document.getElementById('spotify-widget-iframe');
+    if (iframe) {
+        iframe.src = `https://open.spotify.com/embed/track/${trackId}?utm_source=generator&theme=0`;
+        const widget = document.getElementById('spotify-player-widget');
+        if (widget) {
+            widget.classList.remove('collapsed');
+        }
+        AudioSystem.playSelectSound();
+    }
+}

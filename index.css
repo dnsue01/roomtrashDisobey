@@ -2322,3 +2322,94 @@ a, button, .menu-opt, .save-slot-row, .merch-item, .track-row, .inv-slot {
     color: #000 !important;
     box-shadow: var(--horror-red-glow) !important;
 }
+
+/* ==========================================================================
+   SPOTIFY PLAYER FLOATING WIDGET
+   ========================================================================== */
+
+.spotify-player-widget {
+    position: fixed;
+    bottom: 25px;
+    right: 25px;
+    width: 320px;
+    background: rgba(10, 2, 4, 0.95);
+    border: 2px solid var(--horror-red);
+    box-shadow: 0 0 20px rgba(255, 23, 68, 0.4);
+    border-radius: 8px;
+    z-index: 9999;
+    font-family: var(--font-mono);
+    color: #fff;
+    transition: all 0.3s cubic-bezier(0.19, 1, 0.22, 1);
+    overflow: hidden;
+}
+
+.spotify-player-widget.collapsed {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #1DB954; /* Spotify green */
+    border: 2px solid #fff;
+    box-shadow: 0 0 15px rgba(29, 185, 84, 0.7);
+    bottom: 25px;
+    right: 25px;
+}
+
+.spotify-player-widget.collapsed:hover {
+    transform: scale(1.1);
+    box-shadow: 0 0 25px rgba(29, 185, 84, 1);
+}
+
+.spotify-player-widget.collapsed .widget-expanded-content {
+    display: none;
+}
+
+.spotify-player-widget.collapsed .widget-collapsed-icon {
+    display: block;
+    font-size: 1.5rem;
+    line-height: 1;
+}
+
+.spotify-player-widget .widget-collapsed-icon {
+    display: none;
+}
+
+.spotify-player-widget .widget-header {
+    background: rgba(255, 23, 68, 0.15);
+    padding: 8px 12px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid rgba(255, 23, 68, 0.3);
+}
+
+.spotify-player-widget .widget-title {
+    font-size: 0.75rem;
+    font-weight: bold;
+    letter-spacing: 1px;
+    color: var(--horror-red);
+    text-shadow: var(--horror-red-glow);
+}
+
+.spotify-player-widget .widget-close-btn {
+    background: none;
+    border: none;
+    color: #a3a3a3;
+    cursor: pointer;
+    font-size: 0.8rem;
+    font-weight: bold;
+}
+
+.spotify-player-widget .widget-close-btn:hover {
+    color: var(--horror-red);
+}
+
+.spotify-player-widget .widget-body {
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
