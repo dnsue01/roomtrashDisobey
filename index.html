@@ -18,18 +18,18 @@
     <div id="warning-screen" class="warning-screen">
         <div class="warning-box">
             <div class="warning-title">WARNING</div>
-            <p class="warning-text font-mono" style="font-size: 0.95rem; text-transform: uppercase;">
-                THIS SOFTWARE CONTIENE ULTRA UNDERGROUND RAP, SCARY GRAPHICS AND ZOMBIES UNDER THE CONTROL OF ROOMTRASH6.
+            <p class="warning-text font-mono" style="font-size: 0.95rem;">
+                esta web contiene rap underground , cosas 0 mainstream ,referencias a el primer rapero , el mas fresh y que le huelen los pies
             </p>
-            <p class="warning-subtext font-mono" style="font-size: 0.8rem; text-transform: uppercase;">
-                SE RECOMIENDA DISCRECIÓN A AQUELLOS EXPUESTOS A COMMERCIAL MUSIC OR LACK OF BARS.
+            <p class="warning-subtext font-mono" style="font-size: 0.8rem;">
+                se recomienda que la gente comercial no se acerque
             </p>
             <div class="boot-choices" style="display: flex; gap: 15px; justify-content: center; margin-top: 10px; flex-wrap: wrap;">
                 <button id="btn-boot-underground" class="boot-btn">
-                    [ BOOT: UNDERGROUND ]
+                    [ soy under ]
                 </button>
                 <button id="btn-boot-mainstream" class="boot-btn" style="background: #222 !important; border-color: #555 !important; color: #777 !important; box-shadow: none !important;">
-                    [ BOOT: MAINSTREAM ]
+                    [ soy macaron ]
                 </button>
             </div>
             <!-- Warning prompt message -->
@@ -58,17 +58,10 @@
         </header>
 
         <!-- VIEWPORT: Main Vinyl Menu -->
-        <main class="console-viewport" id="console-viewport">
-
-            <!-- Title -->
-            <div class="vinyl-menu-header">
-                <h1 class="font-based-nation vinyl-menu-title">BASED NATION</h1>
-                <p class="vinyl-menu-subtitle font-mono">// SELECCIONA UN DISCO</p>
-            </div>
-
-            <!-- Vinyl disc grid menu -->
-            <div class="vinyl-menu-grid">
-
+        <main id="console-viewport" class="console-viewport">
+            <div class="menu-wheel-container">
+                <div class="menu-instructions font-mono">SELECCIONA PISTA CON DPAD / CLICK</div>
+                
                 <button class="vinyl-menu-item menu-opt active-opt" data-screen="game" data-index="0">
                     <div class="vmenu-disc">
                         <div class="vinyl-grooves"></div>
@@ -82,20 +75,7 @@
                     </div>
                 </button>
 
-                <button class="vinyl-menu-item menu-opt" data-screen="shows" data-index="1">
-                    <div class="vmenu-disc">
-                        <div class="vinyl-grooves"></div>
-                        <div class="vinyl-label" style="background-image: url('assets/disobey_vol2.jpg');"></div>
-                        <div class="vinyl-shine"></div>
-                        <div class="vmenu-disc-icon">📁</div>
-                    </div>
-                    <div class="vmenu-label">
-                        <span class="vmenu-title font-mono">SHOWS</span>
-                        <span class="vmenu-sub font-mono">GIRA</span>
-                    </div>
-                </button>
-
-                <button class="vinyl-menu-item menu-opt" data-screen="bio" data-index="2">
+                <button class="vinyl-menu-item menu-opt" data-screen="bio" data-index="1">
                     <div class="vmenu-disc">
                         <div class="vinyl-grooves"></div>
                         <div class="vinyl-label" style="background-image: url('assets/sueno_permanente.jpg');"></div>
@@ -287,86 +267,6 @@
                     <button id="btn-exit-game" class="action-btn secondary-btn" style="margin-top: auto;">SALIR AL MENÚ</button>
                 </div>
             </div>
-        </section>
-
-        <!-- 2.2 TOURS / CLASSIFIED FILE SUB-SCREEN -->
-        <section id="screen-shows" class="sub-screen grunge-panel hidden">
-            <div class="sub-screen-header">
-                <div style="display: flex; align-items: center; gap: 15px;">
-                    <button class="sub-screen-back-btn action-btn secondary-btn font-mono" style="padding: 5px 12px; font-size: 0.8rem; margin: 0; width: auto; font-weight: bold;">← MENÚ</button>
-                    <h2>EXPEDIENTE DE SHOWS (GIRA)</h2>
-                </div>
-                <div style="display: flex; align-items: center; gap: 10px;">
-                    <div class="file-tag font-mono">CÓDIGO: CONFIDENCIAL_RT6</div>
-                </div>
-            </div>
-            <div class="sub-screen-body layout-shows">
-                <div class="shows-list-panel retro-scroll">
-                    <!-- classified save slot files -->
-                    <div class="save-slot-row active-slot" data-show-id="0">
-                        <div class="save-slot-icon">📁</div>
-                        <div class="save-slot-info">
-                            <div class="save-title">SHOW: MADRID @ CAFÉ BERLÍN</div>
-                            <div class="save-meta">28 JUN 2026 | ENTRADA DISPONIBLE | 136 KB</div>
-                        </div>
-                    </div>
-                    <div class="save-slot-row" data-show-id="1">
-                        <div class="save-slot-icon">📁</div>
-                        <div class="save-slot-info">
-                            <div class="save-title">CONCIERTO REALIZADO: BARCELONA @ RAZZMATAZZ 3</div>
-                            <div class="save-meta">10 APR 2026 | CONCLUIDO | 120 KB</div>
-                        </div>
-                    </div>
-                    <div class="save-slot-row" data-show-id="2">
-                        <div class="save-slot-icon">📁</div>
-                        <div class="save-slot-info">
-                            <div class="save-title">CONCIERTO REALIZADO: MADRID @ SALA UNI</div>
-                            <div class="save-meta">17 APR 2026 | CONCLUIDO | 120 KB</div>
-                        </div>
-                    </div>
-                    <div class="save-slot-row" data-show-id="3">
-                        <div class="save-slot-icon">📁</div>
-                        <div class="save-slot-info">
-                            <div class="save-title">CONCIERTO REALIZADO: VALENCIA @ SPOOK CLUB</div>
-                            <div class="save-meta">20 MAR 2026 | CONCLUIDO | 115 KB</div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="show-details-panel diamond-frame slime-drips">
-                    <div class="details-card">
-                        <div class="details-icon-3d">
-                            <div class="cube">
-                                <div class="face front">☣</div>
-                                <div class="face back">☣</div>
-                                <div class="face left">☣</div>
-                                <div class="face right">☣</div>
-                                <div class="face top">☣</div>
-                                <div class="face bottom">☣</div>
-                            </div>
-                        </div>
-                        <h3 id="detail-show-title">MADRID @ CAFÉ BERLÍN</h3>
-                        <p class="details-desc" id="detail-show-venue">Café Berlín, Madrid (España)</p>
-                        <table class="details-table">
-                            <tr><td>OPERACIÓN:</td><td>CONCIERTO EN VIVO / BASED NATION</td></tr>
-                            <tr><td>FECHA GIRA:</td><td id="detail-show-date">28 de Junio de 2026</td></tr>
-                            <tr><td>ESTADO:</td><td id="detail-show-status" style="color: #39ff14;">EN CURSO / ENTRADAS</td></tr>
-                        </table>
-                        <div class="details-actions">
-                            <a href="#" target="_blank" id="btn-buy-tickets" class="action-btn blink-border">
-                                <span class="btn-icon">⚡</span> EJECUTAR MISIÓN (ENTRADAS)
-                            </a>
-                            <button id="btn-delete-show" class="action-btn secondary-btn">
-                                <span class="btn-icon">🗑️</span> ELIMINAR EXPEDIENTE
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!-- Back button at the bottom of sub-screen -->
-            <button class="action-btn sub-screen-back-btn font-mono" style="margin-top: 15px; width: 100%; font-size: 0.85rem; max-width: 300px; align-self: center;">
-                ← VOLVER AL MENÚ
-            </button>
         </section>
 
         <!-- 2.3 SAVE ROOM / MUSIC PLAYER SUB-SCREEN -->

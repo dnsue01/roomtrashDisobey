@@ -182,8 +182,35 @@ const AppState = {
     audioInitialized: false
 };
 
-const SCREEN_MAPPING = ['screen-game', 'screen-shows', 'screen-bio'];
-const SCREEN_NAMES = ['game', 'shows', 'bio'];
+function saveGameProgress() {
+    localStorage.setItem('based_nation_points', AppState.basedPoints);
+    localStorage.setItem('based_nation_kills', AppState.zombieKills);
+    localStorage.setItem('based_nation_money', AppState.moneyValue);
+    console.log("Game progress saved to localStorage.");
+}
+
+function loadGameProgress() {
+    const pts = localStorage.getItem('based_nation_points');
+    const kills = localStorage.getItem('based_nation_kills');
+    const money = localStorage.getItem('based_nation_money');
+    
+    if (pts !== null) AppState.basedPoints = parseInt(pts, 10);
+    if (kills !== null) AppState.zombieKills = parseInt(kills, 10);
+    if (money !== null) AppState.moneyValue = parseFloat(money);
+    
+    // Update global stat visual displays
+    const killsCountEl = document.getElementById('global-kills-count');
+    if (killsCountEl) killsCountEl.textContent = AppState.zombieKills;
+    
+    const moneyCountEl = document.getElementById('global-money-count');
+    if (moneyCountEl) moneyCountEl.textContent = AppState.moneyValue.toFixed(2) + ' €';
+    
+    const ptsDispEl = document.getElementById('shop-points-display');
+    if (ptsDispEl) ptsDispEl.textContent = AppState.basedPoints;
+}
+
+const SCREEN_MAPPING = ['screen-game', 'screen-bio'];
+const SCREEN_NAMES = ['game', 'bio'];
 
 // ==========================================================================
 // 3. SYNTHESIZER RETRO AUDIO ENGINE (Web Audio API)
@@ -943,6 +970,7 @@ document.addEventListener('DOMContentLoaded', () => {
     setupStartupSequence();
     setupSubScreenCloseButtons();
     setupShopSystem();
+    loadGameProgress();
 });
 
 // Sub-screen back click hooks
@@ -986,10 +1014,10 @@ function setupStartupSequence() {
             AudioSystem.playErrorSound();
             if (errorMsg) {
                 errorMsg.classList.remove('hidden');
-                errorMsg.textContent = "FATAL ERROR: MAINSTREAM SYSTEM EXCLUDED. Tu gusto comercial ha bloqueado el sistema. ¡Recarga en modo UNDERGROUND!";
+                errorMsg.textContent = "FATAL ERROR: MAINSTREAM EXCLUDED. El sistema ha detectado tu gusto comercial y se ha bloqueado. ¡Recarga como SOY UNDER!";
                 setTimeout(() => {
                     errorMsg.classList.add('hidden');
-                }, 4000);
+                }, 4500);
             }
         });
     }
@@ -1402,6 +1430,7 @@ function redeemPointsForDiscount() {
     // Deduct points
     AppState.basedPoints = 0; // Reset points
     document.getElementById('shop-points-display').textContent = AppState.basedPoints;
+    saveGameProgress();
     
     updateMerchDetails(AppState.merchIndex);
     
@@ -1909,7 +1938,7 @@ function updateGameLogic() {
     }
 
     // 2. Boss Spawning Trigger Checks
-    if (gameWave === 1 && gameKills >= 15 && !boss1Spawned) {
+    if (gameWave === 1 && gameKills >= 6 && !boss1Spawned) {
         boss1Spawned = true;
         activeBoss = {
             x: canvas.width / 2,
@@ -1927,7 +1956,7 @@ function updateGameLogic() {
         screenMessage = { text: "¡ALERTA JÓVENES! BOSS: EL GIGANTE", duration: 180 };
         AudioSystem.playPoliceSiren();
         triggerScreenShake(15, 800);
-    } else if (gameWave === 2 && gameKills >= 35 && !boss2Spawned) {
+    } else if (gameWave === 2 && gameKills >= 15 && !boss2Spawned) {
         boss2Spawned = true;
         activeBoss = {
             x: canvas.width / 2,
@@ -1945,7 +1974,7 @@ function updateGameLogic() {
         screenMessage = { text: "¡ALERTA! BOSS: EL MUTANTE", duration: 180 };
         AudioSystem.playPoliceSiren();
         triggerScreenShake(18, 850);
-    } else if (gameWave === 3 && gameKills >= 50 && !boss3Spawned) {
+    } else if (gameWave === 3 && gameKills >= 25 && !boss3Spawned) {
         boss3Spawned = true;
         activeBoss = {
             x: canvas.width / 2,
@@ -2436,6 +2465,9 @@ function triggerGameOver() {
     
     document.getElementById('shop-points-display').textContent = AppState.basedPoints;
     
+    // Save savefile to localStorage
+    saveGameProgress();
+    
     const msg = document.getElementById('game-reward-msg');
     if (gameKills === 0) {
         msg.textContent = "Obtuviste 0 kills. Los zombis devoraron tu cerebro.";
@@ -2461,6 +2493,10 @@ function triggerGameVictory() {
     AppState.moneyValue += 1.0; 
     
     document.getElementById('shop-points-display').textContent = AppState.basedPoints;
+    
+    // Save savefile to localStorage
+    saveGameProgress();
+    
     document.getElementById('game-reward-msg').textContent = "¡HÉROE UNDERGROUND! Derrotaste al Rey Trash y defendiste la cabaña con tus barras definitivas.";
 }
 
@@ -2480,6 +2516,9 @@ function registerZombieKill(bonus = 1) {
     if (ptsEl) ptsEl.textContent = AppState.basedPoints;
     
     updateGameHUD();
+    
+    // Save savefile to localStorage
+    saveGameProgress();
 }
 
 function defeatActiveBoss() {
@@ -2612,6 +2651,7 @@ function buyShopItem(type, btn) {
 
     // Refresh buttons availability
     updateShopButtons();
+    saveGameProgress();
 }
 
 function startNextLevelAfterShop() {
