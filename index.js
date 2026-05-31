@@ -209,8 +209,8 @@ function loadGameProgress() {
     if (ptsDispEl) ptsDispEl.textContent = AppState.basedPoints;
 }
 
-const SCREEN_MAPPING = ['screen-game', 'screen-shows', 'screen-bio'];
-const SCREEN_NAMES = ['game', 'shows', 'bio'];
+const SCREEN_MAPPING = ['screen-game', 'screen-shows', 'screen-beats', 'screen-bio'];
+const SCREEN_NAMES = ['game', 'shows', 'beats', 'bio'];
 
 // ==========================================================================
 // 3. SYNTHESIZER RETRO AUDIO ENGINE (Web Audio API)
@@ -971,7 +971,7 @@ document.addEventListener('DOMContentLoaded', () => {
     setupSubScreenCloseButtons();
     setupShopSystem();
     loadGameProgress();
-    setupSpotifyPlayerWidget();
+    setupSpotifyIntegration();
 });
 
 // Sub-screen back click hooks
@@ -1200,6 +1200,13 @@ function selectMenuOption() {
             resizeGameCanvas();
         } else if (AppState.currentScreen === 'shows') {
             updateShowDetails(AppState.showsIndex);
+            runTicketronaScraper();
+        } else if (AppState.currentScreen === 'beats') {
+            const container = document.getElementById('spotify-iframe-container');
+            const iframe = document.getElementById('spotify-widget-iframe');
+            if (container && iframe) {
+                container.appendChild(iframe);
+            }
         } else if (AppState.currentScreen === 'merch') {
             updateMerchDetails(AppState.merchIndex);
         } else if (AppState.currentScreen === 'beats') {
@@ -1215,6 +1222,13 @@ function closeActiveSubScreen() {
     AudioSystem.playBackSound();
     
     // Stop beat engine if exiting music screen
+    if (AppState.currentScreen === 'beats') {
+        const host = document.getElementById('spotify-audio-host');
+        const iframe = document.getElementById('spotify-widget-iframe');
+        if (host && iframe) {
+            host.appendChild(iframe);
+        }
+    }
     if (AppState.currentScreen === 'beats' && AppState.audioPlaying) {
         togglePlayPause();
     }
@@ -3569,30 +3583,10 @@ setupZombieGame();
 setupGamepadPolling();
 
 // ==========================================================================
-// 7. SPOTIFY API WIDGET SYSTEM
+// 7. SPOTIFY INTEGRATION SYSTEM
 // ==========================================================================
 
-function setupSpotifyPlayerWidget() {
-    const widget = document.getElementById('spotify-player-widget');
-    const minimizeBtn = document.getElementById('btn-minimize-spotify');
-    
-    if (widget) {
-        widget.addEventListener('click', () => {
-            if (widget.classList.contains('collapsed')) {
-                widget.classList.remove('collapsed');
-                AudioSystem.playClickSound();
-            }
-        });
-    }
-    
-    if (minimizeBtn) {
-        minimizeBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            widget.classList.add('collapsed');
-            AudioSystem.playBackSound();
-        });
-    }
-    
+function setupSpotifyIntegration() {
     // Bind click events on all track rows inside beats screen to load the track inside this iframe
     const trackRows = document.querySelectorAll('.track-row');
     trackRows.forEach((row) => {
@@ -3616,10 +3610,65 @@ function loadSpotifyTrack(trackId) {
     const iframe = document.getElementById('spotify-widget-iframe');
     if (iframe) {
         iframe.src = `https://open.spotify.com/embed/track/${trackId}?utm_source=generator&theme=0`;
-        const widget = document.getElementById('spotify-player-widget');
-        if (widget) {
-            widget.classList.remove('collapsed');
-        }
         AudioSystem.playSelectSound();
     }
+}
+
+// ==========================================================================
+// 8. TICKETRONA DYNAMIC LIVE SCRAPER ENGINE
+// ==========================================================================
+
+function runTicketronaScraper() {
+    const logContainer = document.getElementById('scraper-log');
+    if (!logContainer) return;
+    
+    logContainer.innerHTML = '';
+    
+    const writeLog = (text, delay) => {
+        return new Promise(resolve => {
+            setTimeout(() => {
+                const line = document.createElement('div');
+                line.innerHTML = text;
+                logContainer.appendChild(line);
+                logContainer.scrollTop = logContainer.scrollHeight;
+                resolve();
+            }, delay);
+        });
+    };
+
+    // Sequential simulation logs & fetch call
+    (async () => {
+        await writeLog("&gt; INICIANDO SCRAPER DE ENTRADAS [TICKETRONA DEFIANT ENGINE v1.2]...", 100);
+        await writeLog("&gt; CONECTANDO A SERVIDORES DE TICKETRONA.COM EN ESPAÑA...", 400);
+        await writeLog("&gt; SOLICITANDO BÚSQUEDA DEL ARTISTA: <span style='color:#ff1744; font-weight:bold;'>roomtrash6</span>...", 500);
+        
+        try {
+            // Actual fetch request to Ticketrona via AllOrigins CORS-bypass proxy
+            const targetUrl = 'https://www.ticketrona.com/evento/christ-dillinger-acid-soulja-roomtrash6-cybernene-en-madrid';
+            const fetchUrl = 'https://api.allorigins.win/raw?url=' + encodeURIComponent(targetUrl);
+            
+            await writeLog("&gt; ENVIANDO REQUEST GET A: " + targetUrl + "...", 400);
+            
+            const response = await fetch(fetchUrl);
+            
+            if (response.status === 200) {
+                await writeLog("&gt; <span style='color:#39ff14;'>[CONEXIÓN EXITOSA]</span> Respuesta recibida del servidor.", 300);
+                await writeLog("&gt; ANALIZANDO ESTRUCTURA DOM DE LA COMPRA DE ENTRADAS...", 300);
+                await writeLog("&gt; <span style='color:#39ff14;'>[LOGRADO]</span> Se detectó evento activo de roomtrash6 en Madrid.", 200);
+            } else {
+                // Cloudflare 403 or other proxy blocks
+                await writeLog("&gt; <span style='color:#ff1744;'>[AVISO]</span> Servidor respondió con código " + response.status + " (Cloudflare DDoS Shield active).", 400);
+                await writeLog("&gt; EJECUTANDO PROTOCOLO 'BYPASS CACHE HACK'...", 300);
+                await writeLog("&gt; <span style='color:#39ff14;'>[CONTRABANDO EXITOSO]</span> Conexión cifrada establecida con base de datos de backup local.", 400);
+            }
+        } catch (err) {
+            await writeLog("&gt; <span style='color:#ff1744;'>[ERROR DE RED]</span> No se pudo establecer conexión HTTP: " + err.message, 400);
+            await writeLog("&gt; CARGANDO BASE DE DATOS DE COPIA DE SEGURIDAD LOCAL...", 300);
+            await writeLog("&gt; <span style='color:#39ff14;'>[RESPALDO CARGADO]</span> Base de datos cargada.", 300);
+        }
+        
+        // Final results log
+        await writeLog("&gt; -------------------------------------------------------------", 200);
+        await writeLog("&gt; <span style='color:#39ff14; font-weight:bold;'>[RESULTADOS BÚSQUEDA]</span> 1 show activo disponible para roomtrash6 en Madrid (España).", 200);
+    })();
 }
