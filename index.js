@@ -179,7 +179,8 @@ const AppState = {
     
     // Audio Player
     audioPlaying: false,
-    audioInitialized: false
+    audioInitialized: false,
+    spotifyWidgetCollapsed: true
 };
 
 function saveGameProgress() {
@@ -1007,6 +1008,7 @@ function setupStartupSequence() {
                 AppState.currentScreen = 'menu';
                 updateECG(100); // 100% fine health
                 playRandomSpotifyTrack();
+                positionSpotifyIframe();
             }, 1200);
         });
     }
@@ -3637,6 +3639,30 @@ function setupSpotifyIntegration() {
             }
         });
     });
+
+    // Minimize button in floating widget
+    const minimizeBtn = document.getElementById('btn-minimize-spotify');
+    if (minimizeBtn) {
+        minimizeBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            AppState.spotifyWidgetCollapsed = true;
+            positionSpotifyIframe();
+            AudioSystem.playClickSound();
+        });
+    }
+
+    // Host widget toggle listener when collapsed
+    const host = document.getElementById('spotify-audio-host');
+    if (host) {
+        host.addEventListener('click', (e) => {
+            // Expand only when clicked in collapsed state and not inside Beats screen
+            if (host.classList.contains('collapsed') && AppState.currentScreen !== 'beats') {
+                AppState.spotifyWidgetCollapsed = false;
+                positionSpotifyIframe();
+                AudioSystem.playClickSound();
+            }
+        });
+    }
 
     window.addEventListener('resize', positionSpotifyIframe);
 }

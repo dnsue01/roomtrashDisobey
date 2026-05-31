@@ -2426,3 +2426,42 @@ a, button, .menu-opt, .save-slot-row, .merch-item, .track-row, .inv-slot {
     max-height: 420px;
     overflow-y: auto;
 }
+
+/* Spotify Player overrides inside beats screen */
+#spotify-audio-host.in-beats-screen {
+    position: absolute !important;
+    border: none !important;
+    box-shadow: none !important;
+    background: transparent !important;
+    transition: opacity 0.3s ease !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    overflow: hidden !important;
+}
+#spotify-audio-host.in-beats-screen .widget-header {
+    display: none !important;
+}
+#spotify-audio-host.in-beats-screen .widget-expanded-content {
+    display: flex !important;
+    height: 100% !important;
+    width: 100% !important;
+}
+#spotify-audio-host.in-beats-screen .widget-body {
+    display: flex !important;
+    flex-direction: column !important;
+    height: 100% !important;
+    width: 100% !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    max-height: none !important;
+    overflow: hidden !important;
+}
+#spotify-audio-host.in-beats-screen .widget-body iframe {
+    height: 100% !important;
+}
+#spotify-audio-host.in-beats-screen .widget-collapsed-icon {
+    display: none !important;
+}
+#spotify-audio-host.in-beats-screen .widget-api-badge {
+    display: none !important;
+}

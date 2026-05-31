@@ -557,9 +557,22 @@
             </div>
         </footer>
         
-    <!-- Spotify Persistent Audio Host (never display:none to prevent pausing) -->
-    <div id="spotify-audio-host" style="position: absolute; left: -9999px; top: -9999px; width: 300px; height: 380px; opacity: 0.001; pointer-events: none; transition: opacity 0.3s ease, left 0s 0.3s, top 0s 0.3s;">
-        <iframe id="spotify-widget-iframe" src="https://open.spotify.com/embed/artist/1VdDHkm5XpSy9OZiNTCzjE?utm_source=generator&theme=0" width="100%" height="100%" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="eager" style="border-radius: 8px;"></iframe>
+    <!-- Spotify Persistent Audio Host & Floating Widget (never display:none to prevent pausing) -->
+    <div id="spotify-audio-host" class="spotify-player-widget collapsed">
+        <div class="widget-collapsed-icon">💿</div>
+        <div class="widget-expanded-content" style="width: 100%; height: 100%; display: flex; flex-direction: column;">
+            <div class="widget-header">
+                <span class="widget-title">SPOTIFY PLAYER</span>
+                <button class="widget-close-btn" id="btn-minimize-spotify">✕</button>
+            </div>
+            <div class="widget-body" style="flex-grow: 1; padding: 10px; display: flex; flex-direction: column; gap: 8px; overflow: hidden; max-height: none;">
+                <iframe id="spotify-widget-iframe" src="https://open.spotify.com/embed/artist/1VdDHkm5XpSy9OZiNTCzjE?utm_source=generator&theme=0" width="100%" height="280" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="eager" style="border-radius: 8px;"></iframe>
+                <div class="widget-api-badge font-mono" style="font-size: 0.5rem; color: #39ff14; text-shadow: 0 0 5px rgba(57,255,20,0.5); text-align: center; line-height: 1.2; padding-top: 4px; border-top: 1px dashed rgba(57,255,20,0.2);">
+                    API STATUS: CONNECTED<br>
+                    CLIENT_ID: 5ca413925b6845f6951ce518cbbaa44d
+                </div>
+            </div>
+        </div>
     </div>
 
         <!-- Floating Y2K Parental Advisory badge (Street Mixtape style) -->
