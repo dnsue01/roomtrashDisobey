@@ -2413,3 +2413,8 @@ a, button, .menu-opt, .save-slot-row, .merch-item, .track-row, .inv-slot {
     flex-direction: column;
     gap: 8px;
 }
+
+.spotify-player-widget .widget-body {
+    max-height: 420px;
+    overflow-y: auto;
+}
